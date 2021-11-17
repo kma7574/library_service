@@ -1,0 +1,129 @@
+{% extends 'base.html'%}
+
+{% block scripts %}
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!--카카오지도 api-->
+<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
+<script>
+	function search_addr() {
+		new daum.Postcode({
+			oncomplete: function (data) {
+				document.querySelector("#mainAddress").value = data.roadAddress //주소 입력받음(사용자가 도로명,지번 아무거나 선택해도 도로명주소로 입력됨)
+				document.getElementById("detailAddress").focus(); //상세주소로 focus이동
+			}
+		}).open();
+	}
+	function regist() {
+		console.log('wtf')
+		let user_id = $('#userId').val()
+		let user_pw = $('#userPw').val()
+		let user_pw2 = $('#userPw2').val()
+		let name = $('#name').val()
+		let gender = $('input:radio[name="condition"]:checked').val();
+		console.log(name)
+		let phone_number = $('#phoneNumber').val()
+		let address = $('#mainAddress').val() + " " + $('#detailAddress').val()
+
+		if (user_id == '' || user_pw == '') {
+			alert('아이디와 패스워드를 입력해 주세요.')
+			return;
+		}
+
+		if (user_pw != user_pw2) {
+			alert('비밀번호를 확인해 주세요!')
+			return;
+		}
+		$.ajax({
+			url: '/join',
+			type: 'post',
+			data: {
+				'user_id': user_id,
+				'user_pw': user_pw,
+				'name': name,
+				'gender': gender,
+				'phone_number': phone_number,
+				'address': address
+			},
+			success: function (res) {
+				if (res['result'] == 'success') {
+					alert("회원가입 성공!");
+					window.location.href = '/login'
+				}
+			}
+		})
+	}
+</script>
+{% endblock %}
+
+
+{% block content %}
+<h2 class="title">Elice 회원가입</h2>
+<div class="wrap">
+	<hr>
+	<div class="card">
+		<div class="card-body">
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">ID</label>
+
+				<div class="col-sm-7">
+					<input type="text" id='userId' class="form-control" placeholder="이메일 형식으로 기재해 주세요.">
+				</div>
+				<div class="col-sm-3">
+					<button class="btn btn-primary" onclick=regist()>ID CHECK</button>
+				</div>
+
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">비밀번호</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="userPw">
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">비밀번호 확인</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="userPw2">
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">이름</label>
+				<div class="col-sm-10">
+					<input type="tel" class="form-control" id="name">
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">성별</label>
+				<div class="col-sm-10">
+					<input type="radio" name="condition" value="0" checked="checked" id="male">남성
+					<input type="radio" name="condition" value="1" id="female">여성
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">전화번호</label>
+				<div class="col-sm-10">
+					<input type="tel" class="form-control" id="phoneNumber" placeholder="010-1234-5678"
+						pattern="[0-1]{3}-[0-9]{4}-[0-9]{4}" required>
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">주소</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" id="mainAddress" readonly />
+				</div>
+				<div class="col-sm-3">
+					<button class="btn btn-primary" onclick=search_addr()>ADDRESS CHECK</button>
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">상세주소</label>
+				<div class="col-sm-7">
+					<input type="text" class="form-control" id="detailAddress" />
+				</div>
+			</div>
+
+			<button class="btn btn-primary" onclick=regist()>회원가입하기</button>
+			<a href="/login" class="btn btn-primary">로그인하기</a>
+		</div>
+	</div>
+	<hr>
+</div>
+{% endblock %}
