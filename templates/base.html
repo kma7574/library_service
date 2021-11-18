@@ -26,6 +26,7 @@
         .title {
             text-align: center;
         }
+		
 	</style>
 	{% block scripts%}
     {% endblock %}
@@ -75,12 +76,18 @@
 					
 				</ul>
 				<ul class="navbar-nav mb-2 mb-lg-0">
+					{% if not session['login'] %}
 					<li class="justify-content-end nav-item">					
 						<a class="nav-link" href="/join">회원가입</a>
 					</li>
 					<li class="nav-item justify-content-end">
 						<a class="nav-link" href="/login">로그인</a>
 					</li>
+					{% else %}
+					<li class="nav-item justify-content-end">
+						<a class="nav-link" href="/logout">로그아웃</a>
+					</li>
+					{% endif %}
 				</ul>
 
 				<form class="d-flex">

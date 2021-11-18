@@ -2,10 +2,35 @@
 {% extends 'base.html' %}
 <!-- scripts block과 필요한 코드를 작성하세요. -->
 {% block scripts %}
+<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
 <script>
-    function login(){
-        alert("로그인")
-    }
+	function login() {
+		console.log('해치웠나')
+		let user_id = $('#userId').val()
+		let user_pw = $('#userPw').val()
+		$.ajax({
+			url: '/login',
+			type: 'post',
+			data: {
+				'user_id': user_id,
+				'user_pw': user_pw
+			},
+			success: function (res) {
+				if (res['result'] == 'success') {
+					alert("로그인 성공")
+					window.location.href = '/'
+				}
+				else if (res['result'] == 'id_fail') {
+					alert("입력하신 ID값이 존재하지 않습니다!")
+					window.location.reload()
+				}
+				else if (res['result'] == 'pw_fail') {
+					alert("비밀번호가 일치하지 않습니다!")
+					window.location.reload()
+				}
+			}
+		})
+	}
 </script>
 {% endblock %}
 
@@ -14,25 +39,25 @@
 {% block content %}
 <h2 class>Elice 로그인</h2>
 <div class="wrap">
-<hr>
-<div class="card">
-    <div class="card-body">
-            <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">ID</label>
-                    <div class="col-sm-10">
-                            <input type="text" class="form-control" placeholder="elice">
-                    </div>
-            </div>
-            <div class="mb-3 row">
-                    <label class="col-sm-2 col-form-label">Password</label>
-                    <div class="col-sm-10">
-                            <input type="password" class="form-control" id="userPw">
-                    </div>
-            </div>
-            <button class="btn btn-primary" onclick=login()>로그인하기</button>
-            <a href="/join" class="btn btn-primary">회원가입하기</a>
-    </div>
-</div>
-<hr>
+	<hr>
+	<div class="card">
+		<div class="card-body">
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">ID</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id='userId' placeholder="이메일 형식으로 기재해 주세요.">
+				</div>
+			</div>
+			<div class="mb-3 row">
+				<label class="col-sm-2 col-form-label">Password</label>
+				<div class="col-sm-10">
+					<input type="password" class="form-control" id="userPw">
+				</div>
+			</div>
+			<button class="btn btn-primary" onclick=login()>로그인하기</button>
+			<a href="/join" class="btn btn-primary">회원가입하기</a>
+		</div>
+	</div>
+	<hr>
 </div>
 {% endblock %}
