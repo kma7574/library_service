@@ -35,6 +35,16 @@ def join():
         return render_template('join.html')
 
 
-@board.route('/login', methods=['GET', 'POST'])
+@board.route('/id_check', methods=['GET', 'POST'])
+def id_check():
+    user_id = request.form['user_id']
+    id_overlap = Member.query.filter(Member.user_id == user_id).first()
+    if id_overlap is not None:  # id가 중복
+        return jsonify({"result": "overlap"})
+    else:
+        return jsonify({"result": "ok"})
+
+
+@board.route('/login', methods=['POST'])
 def login():
    return render_template('login.html')
