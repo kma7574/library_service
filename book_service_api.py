@@ -7,7 +7,13 @@ from flask_bcrypt import Bcrypt
 book_service = Blueprint('book_service', __name__)
 bcrypt = Bcrypt()
 
-@book_service.route('/list',  methods=['GET', 'POST'])
+@book_service.route('/inventory',  methods=['GET', 'POST'])
 def show_list():
-    book_list = Book.query.all()
-    return render_template('detail.html', book_list = book_list)
+    book_list = Book.query.order_by(Book.book_name.asc())
+    return render_template('inventory.html', book_list = book_list)
+
+
+@book_service.route('/inventory/<int:book_id>',  methods=['GET', 'POST'])
+def show_detail(book_id):
+    book_info = Book.query.filter(Book.id == book_id).first()
+    return render_template('detail.html', book_info = book_info, book_id=book_id)

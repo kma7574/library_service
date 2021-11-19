@@ -1,20 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block scripts %}
+<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JINJA Practice</title>
-</head>
+    <h1 class="display-1 text-center">Height</h1>
 
-<body>
-    <h2>과일</h2>
-    <p>
-        고오급도서관
-    </p>
+    <br>
 
+    <div class="row-vh">
 
-</body>
+        <div class="h-25">Height 25%</div>
 
-</html>
+        <div class="h-50">Height 50%</div>
+
+        <div class="h-75">Height 75%</div>
+
+        <div class="h-100">Height 100%</div>
+
+        <div class="h-auto">Height auto</div>
+
+    </div>
+
+</div>
+{% endblock %}

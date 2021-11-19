@@ -1,24 +1,40 @@
 {% extends 'base.html' %}
-{% block scripts %}
-<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
-{% endblock %}
-{% block content %}
-<h1 class="title">엘리스도서관 책 목록</h1>
+{% block content%}
+{{book_id}}번째 책입니다.
+
+
+
 <hr>
-    <div class="container">
-        <div class="row row-cols-1 row-cols-md-4">
-            {% for book in book_list %}
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <img src={{book.path}} alt="" class="card-img"/>
-                        <h5 class="card-title title">{{book.book_name}}</h5>
-                        <p class="card-text title">5권남음</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+<div class="container d-flex justify-content-around">
+    <img src="{{book_info.path}}" class="rounded float-left" alt="book">
+    <table class="table table-striped w-auto  ">
+        <tbody>
+            <tr>
+                <td>책이름</td>
+                <td>{{book_info.book_name}}</td>
+            </tr>
+            <tr>
+                <td>출판사</td>
+                <td>{{book_info.publisher}}</td>
+            </tr>
+            <tr>
+                <td>저자</td>
+                <td>{{book_info.author}}</td>
+            </tr>
+            <tr>
+                <td>출간일</td>
+                <td>{{book_info.publication_date}}</td>
+            </tr>
+            <tr>
+                <td>페이지 수</td>
+                <td>{{book_info.pages}}</td>
+            </tr>
+            <tr>
+                <td>ISBN 코드</td>
+                <td>{{book_info.isbn}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 <hr>
 {% endblock %}
