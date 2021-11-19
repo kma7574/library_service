@@ -6,23 +6,27 @@
 <h1 class="title">엘리스도서관 책 목록</h1>
 <hr>
     <div class="container">
-        <p>총 {{search_count}}권의 책이 검색되었습니다.</p>
-        <div class="row row-cols-1 row-cols-md-4">
-            {% for book in book_list %}
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <a href="/inventory/{{book.id}}">
-                            <img src={{book.path}} alt="" class="card-img"/>
-                        </a>
-                        <h5 class="card-title title">{{book.book_name}}</h5>
-                        <p class="card-text title">5권남음</p>
-                        <a href="/join" class="btn btn-primary">대여하기</a>
+        {% if search_count==0%}
+            <p class="title">{{search_word}}와(과) 일치하는 검색결과가 없습니다.</p>
+        {% else %}
+        <p class="title">총 {{search_count}}권의 책이 검색되었습니다.</p>
+            <div class="row row-cols-1 row-cols-md-4">
+                {% for book in book_list %}
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <a href="/inventory/{{book.id}}">
+                                <img src={{book.path}} alt="" class="card-img"/>
+                            </a>
+                            <h5 class="card-title title">{{book.book_name}}</h5>
+                            <p class="card-text title">5권남음</p>
+                            <a href="/join" class="btn btn-primary">대여하기</a>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
+        {% endif %}
     </div>
 <hr>
 {% endblock %}

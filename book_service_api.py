@@ -10,10 +10,10 @@ bcrypt = Bcrypt()
 @book_service.route('/inventory',  methods=['GET', 'POST'])
 def show_list():
     if request.method == 'POST':
-        q = request.form['searchWord']
-        book_list = Book.query.filter(Book.book_name.like(f'%{q}%')).order_by(Book.book_name.asc())
+        search_word = request.form['searchWord']
+        book_list = Book.query.filter(Book.book_name.like(f'%{search_word}%')).order_by(Book.book_name.asc())
         search_count = book_list.count()
-        return render_template('inventory.html', book_list = book_list, search_count = search_count)
+        return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word)
     else:
         book_list = Book.query.order_by(Book.book_name.asc())
         search_count = book_list.count()
