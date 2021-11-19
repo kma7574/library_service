@@ -11,15 +11,15 @@
         {% else %}
         <p class="title">총 {{search_count}}권의 책이 검색되었습니다.</p>
             <div class="row row-cols-1 row-cols-md-4">
-                {% for book in book_list %}
+                {% for book in range(book_list | length)%}
                 <div class="col mb-4">
                     <div class="card h-100">
                         <div class="card-body">
-                            <a href="/inventory/{{book.id}}">
-                                <img src={{book.path}} alt="" class="card-img"/>
+                            <a href="/inventory/{{book_list[book].id}}">
+                                <img src={{book_list[book].path}} alt="" class="card-img"/>
                             </a>
-                            <h5 class="card-title title">{{book.book_name}}</h5>
-                            <p class="card-text title">5권남음</p>
+                            <h5 class="card-title title">{{book_list[book].book_name}}</h5>
+                            <p class="card-text title">{{book_remain_count[book][0]}}권남음</p>
                             <a href="/join" class="btn btn-primary">대여하기</a>
                         </div>
                     </div>

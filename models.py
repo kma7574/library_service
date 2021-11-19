@@ -51,7 +51,7 @@ class Book_borrow(db.Model):
         db.Integer, db.ForeignKey(Member.id), nullable=False)
     borrow_date = db.Column(db.TIMESTAMP, server_default=db.func.now(),
                             onupdate=db.func.now())
-    borrow_state = db.Column(db.TINYINT, nullable=False,
+    borrow_state = db.Column(db.Boolean, nullable=False,
                              default=0)  # 대출현황(반납x: 0, 반납o: 1)
 
     def __init__(self, borrow_book_id, borrow_user_id):
