@@ -6,6 +6,7 @@
 <h1 class="title">엘리스도서관 책 목록</h1>
 <hr>
     <div class="container">
+        <p>총 {{search_count}}권의 책이 검색되었습니다.</p>
         <div class="row row-cols-1 row-cols-md-4">
             {% for book in book_list %}
             <div class="col mb-4">
