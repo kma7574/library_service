@@ -34,10 +34,6 @@ def borrow_check():
     user_id = session.get('login') # 로그인값은 불러오는것같음
     if user_id is None:
         return jsonify({"result": "need_login"})
-    print('----------------------------------------------------------')
-    print(user_id) # 1 잘출력하고있음
-    print(type(user_id)) # integer
-    print('----------------------------------------------------------')
     # 잔여수량 테이블에 남은 권수 확인하고 대출처리한다음 수량 -1 업데이트
     remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_remain.remain_book_id == book_id).first()
     # print(remain_count)
@@ -48,22 +44,18 @@ def borrow_check():
         update_book.remain_book_count = remain_count[0] -1
         db.session.commit()
         # 대출테이블에 추가
-        # id = db.session.query(Member.id).filter(Member.id == user_id).first()
-        print('########################################')
-        print(id)
-        print('########################################')
         record = Book_borrow(book_id, user_id)
         db.session.add(record)
         db.session.commit()
         return jsonify({"result": "ok"})
 
 
-
-
-def id_check():
-    user_id = request.form['user_id']
-    id_overlap = Member.query.filter(Member.user_id == user_id).first()
-    if id_overlap is not None:  # id가 중복
-        return jsonify({"result": "overlap"})
-    else:
-        return jsonify({"result": "ok"})
+@book_service.route('/myborrow/<int:user_id>', methods=['GET'])
+def myborrow(user_id):
+    myborrow_list = Book_borrow.query.filter(Book_borrow.borrow_user_id == user_id).all()
+    if len(myborrow_list) == 0: #로그인한유저가 현재 대출한 이력이 없음
+        return render_template('myborrow.html', myborrow_list = myborrow_list)
+    else: #로그인한 유저가 한권이상 대출한 이력이 있다.
+        book_name = db.session.query(Book.book_name).join(Book_borrow, Book_borrow.borrow_book_id == Book.id).all()
+        name = db.session.query(Member.name).join(Book_borrow, Book_borrow.borrow_user_id == Member.id).all()
+        return render_template('myborrow.html', myborrow_list = myborrow_list, book_name=book_name[0][0], name=name[0][0])

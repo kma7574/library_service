@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block scripts %}
+<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
+<script>
+
+</script>
+{% endblock %}
+{% block content %}
+<h1 class="title">{{name}}님의 대여목록</h1>
+<hr>
+{% if myborrow_list %}
+<div class="container d-flex justify-content-around">
+    <table class="table table-striped w-auto title">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">책</th>
+                <th scope="col">대여날짜</th>
+                <th scope="col">반납상태</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% for book in myborrow_list%}
+                <th scope="row">{{book.borrow_book_id}}</th>
+                <td>{{book_name}}</td>
+                <td>{{book.borrow_date}}</td>
+                {% if book.borrow_state == False%}
+                    <td>반납대기중</td>
+                {% else %}
+                    <td>반납완료</td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% else%}
+<h2 class="title">현재 대여하신 책이 없습니다.</h2>
+<div class="title">
+    <a class="btn btn-primary" href="/inventory">책 목록 보러라기</a>
+</div>
+{% endif %}
+{% endblock %}

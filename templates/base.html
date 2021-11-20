@@ -86,6 +86,9 @@
 					</li>
 					{% else %}
 					<li class="nav-item justify-content-end">
+						<a class="nav-link" href="/myborrow/{{session['login']}}">대출현황</a>
+					</li>
+					<li class="nav-item justify-content-end">
 						<a class="nav-link" href="/logout">로그아웃</a>
 					</li>
 					{% endif %}
