@@ -20,10 +20,7 @@ def load_logged_member():#로그인 체크 모듈
 def home():
     book_list = Book.query.all()
     return render_template('index.html', book_list = book_list)
-    
-@user.route('/post', methods=['GET'])
-def post():
-    return render_template('index.html')
+
 
 @user.route('/join', methods=['GET', 'POST'])
 def join():
