@@ -54,22 +54,25 @@ def borrow_check():
 def myborrow(user_id):
     # print('?????????????????????????????????????????????????????')
     name = db.session.query(Member.name).filter(Member.id == user_id).first()
-    print('?????????????????????????????????????????????????????')
-    print(name)
-    print('?????????????????????????????????????????????????????')
-    myborrow_list = Book_borrow.query.filter(Book_borrow.borrow_user_id == user_id).all()
-    book_cnt = len(myborrow_list)
-    if len(myborrow_list) == 0:  # 로그인한유저가 현재 대출한 이력이 없음
+    # myborrow_list = Book_borrow.query.filter(Book_borrow.borrow_user_id == user_id)
+    myborrow_list = db.session.query(Book_borrow.borrow_state, Book_borrow.borrow_date, Book.book_name).join(Book, Book_borrow.borrow_book_id == Book.id).filter(Book_borrow.borrow_user_id == user_id)
+    print('--------------------------------------------------------------------------------------------------------')
+    print(myborrow_list)
+    print('--------------------------------------------------------------------------------------------------------')
+    book_cnt = myborrow_list.count()
+    if book_cnt == 0:  # 로그인한유저가 현재 대출한 이력이 없음
         return render_template('myborrow.html', myborrow_list=myborrow_list,  name=name[0], cnt=0, borrow_ing=0)
     else:  # 로그인한 유저가 한권이상 대출한 이력이 있다.
         book_name = db.session.query(Book.book_name).join(Book_borrow, Book_borrow.borrow_book_id == Book.id).all()
+        page = request.args.get('page', type=int, default=1)  # 페이지
+        pagination = myborrow_list.paginate(page, per_page=10)
         book_title = []
         borrow_ing = 0 # 현재 대출중인 책 수
-        for i in range(len(myborrow_list)):
+        for i in range(book_cnt):
             book_title.append(book_name[i].book_name)
             if myborrow_list[i].borrow_state == 0:
                 borrow_ing += 1
-        return render_template('myborrow.html', myborrow_list=myborrow_list, book_name=book_title, name=name[0], cnt=book_cnt, borrow_ing=borrow_ing)
+        return render_template('myborrow.html', myborrow_list=myborrow_list, book_name=book_title, name=name[0], cnt=book_cnt, borrow_ing=borrow_ing, pagination=pagination)
 
 
 
@@ -97,3 +100,14 @@ def return_check():
             return jsonify({"result": "ok"})
     else:
         return redirect('/')
+
+
+@book_service.route('/temp')
+def _list():
+    page = request.args.get('page', type=int, default=1)  # 페이지
+    books = Book.query.order_by(Book.book_name.asc())
+    per_page = 10
+    pagination = books.paginate(page, per_page)
+    book_list = pagination.items
+    book_count = Book.query.count()
+    return render_template('tmp.html', pagination=pagination, book_list = book_list, cnt = book_count)
