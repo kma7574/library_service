@@ -20,8 +20,8 @@
             </tr>
         </thead>
         <tbody>
+            {% for book in myborrow_list%}
             <tr>
-                {% for book in myborrow_list%}
                 <th scope="row">{{book.borrow_book_id}}</th>
                 <td>{{book_name}}</td>
                 <td>{{book.borrow_date}}</td>
@@ -30,8 +30,8 @@
                 {% else %}
                     <td>반납완료</td>
                 {% endif %}
-                {% endfor %}
             </tr>
+                {% endfor %}
         </tbody>
     </table>
 </div>
