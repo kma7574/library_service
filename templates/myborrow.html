@@ -20,12 +20,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for book in myborrow_list%}
+            {% for i in range(myborrow_list | length)%}
             <tr>
-                <th scope="row">{{book.borrow_book_id}}</th>
-                <td>{{book_name}}</td>
-                <td>{{book.borrow_date}}</td>
-                {% if book.borrow_state == False%}
+                <th scope="row">{{myborrow_list[i].borrow_book_id}}</th>
+                <td>{{book_name[i]}}</td>
+                <td>{{myborrow_list[i].borrow_date}}</td>
+                {% if myborrow_list[i].borrow_state == False%}
                     <td>반납대기중</td>
                 {% else %}
                     <td>반납완료</td>

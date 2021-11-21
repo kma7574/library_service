@@ -53,9 +53,17 @@ def borrow_check():
 @book_service.route('/myborrow/<int:user_id>', methods=['GET'])
 def myborrow(user_id):
     myborrow_list = Book_borrow.query.filter(Book_borrow.borrow_user_id == user_id).all()
+    print('---------------------------------------------------------------------')
+    print(myborrow_list[2].borrow_book_id)
+    print(len(myborrow_list))
+    print('---------------------------------------------------------------------')
     if len(myborrow_list) == 0: #로그인한유저가 현재 대출한 이력이 없음
         return render_template('myborrow.html', myborrow_list = myborrow_list)
     else: #로그인한 유저가 한권이상 대출한 이력이 있다.
         book_name = db.session.query(Book.book_name).join(Book_borrow, Book_borrow.borrow_book_id == Book.id).all()
+        book_title = []
+        for i in range(len(myborrow_list)):
+            print(book_name[i].book_name)
+            book_title.append(book_name[i].book_name)
         name = db.session.query(Member.name).join(Book_borrow, Book_borrow.borrow_user_id == Member.id).all()
-        return render_template('myborrow.html', myborrow_list = myborrow_list, book_name=book_name[0][0], name=name[0][0])
+        return render_template('myborrow.html', myborrow_list = myborrow_list, book_name=book_title, name=name[0][0])
