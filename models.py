@@ -53,6 +53,7 @@ class Book_borrow(db.Model):
                             onupdate=db.func.now())
     borrow_state = db.Column(db.Boolean, nullable=False,
                              default=0)  # 대출현황(반납x: 0, 반납o: 1)
+    return_date = db.Column(db.DateTime)
 
     def __init__(self, borrow_book_id, borrow_user_id):
         self.borrow_book_id = borrow_book_id

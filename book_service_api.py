@@ -1,3 +1,4 @@
+from datetime import datetime
 from operator import add
 from flask import redirect, request, render_template, jsonify, Blueprint, session, g, Flask
 from models import Book, Book_borrow, Book_remain, Member
@@ -54,11 +55,7 @@ def borrow_check():
 def myborrow(user_id):
     # print('?????????????????????????????????????????????????????')
     name = db.session.query(Member.name).filter(Member.id == user_id).first()
-    # myborrow_list = Book_borrow.query.filter(Book_borrow.borrow_user_id == user_id)
-    myborrow_list = db.session.query(Book_borrow.borrow_state, Book_borrow.borrow_date, Book.book_name).join(Book, Book_borrow.borrow_book_id == Book.id).filter(Book_borrow.borrow_user_id == user_id)
-    print('--------------------------------------------------------------------------------------------------------')
-    print(myborrow_list)
-    print('--------------------------------------------------------------------------------------------------------')
+    myborrow_list = db.session.query(Book_borrow.borrow_state, Book_borrow.borrow_date, Book_borrow.return_date, Book_borrow.borrow_book_id, Book_borrow.id, Book.book_name).join(Book, Book_borrow.borrow_book_id == Book.id).filter(Book_borrow.borrow_user_id == user_id)
     book_cnt = myborrow_list.count()
     if book_cnt == 0:  # 로그인한유저가 현재 대출한 이력이 없음
         return render_template('myborrow.html', myborrow_list=myborrow_list,  name=name[0], cnt=0, borrow_ing=0)
@@ -79,23 +76,26 @@ def myborrow(user_id):
 @book_service.route('/return_check', methods=['POST', 'GET'])
 def return_check():
     if request.method == 'POST':
-        book_id = request.form['book_id']
+        idx = request.form['idx']
         user_id = session.get('login') # 로그인값은 불러오는것같음
         if user_id is None:
             return jsonify({"result": "need_login"})
         # 반납처리로직
         # 반납하기 버튼을누르면 해당 아이디에 해당하는 책의 남은 수량카운트를 +1 해준다, borrow_state값을 0에서 1로 바꿔준다.
-        remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_remain.remain_book_id == book_id).first()
-        # print(remain_count)
+        # remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_borrow.id == book_id).first()
+        borrow = db.session.query(Book_borrow).filter(Book_borrow.borrow_user_id == user_id).offset(int(idx)-1).first()
+        remain_count = db.session.query(Book_remain).filter(Book_remain.remain_book_id == Book_borrow.borrow_book_id).all()
         if remain_count[0] == 5: #책의 최대수량은 5인데 반납하기전 권수가 5권이면 뭔가 오류가 생긴것(각 책의 최대수량은 추후 변경 가능)
             return jsonify({"result": "unknown_error"})
         else:
-            update_book = Book_remain.query.filter(Book_remain.remain_book_id == book_id).first()
-            update_book.remain_book_count = remain_count[0] +1
-            
+            update_book = Book_remain.query.filter(Book_remain.remain_book_id == borrow.borrow_book_id).first()
+            update_book.remain_book_count += 1
+            db.session.commit()
             # 대여현황테이블의 반납상태 업데이트
-            update_state = Book_borrow.query.filter(Book_borrow.borrow_book_id == book_id).first()
+            update_state = Book_borrow.query.filter((Book_borrow.borrow_book_id == borrow.borrow_book_id) & (Book_borrow.borrow_state == False)).first()
             update_state.borrow_state = True
+            now = datetime.now()
+            update_state.return_date = now
             db.session.commit()
             return jsonify({"result": "ok"})
     else:
@@ -104,10 +104,4 @@ def return_check():
 
 @book_service.route('/temp')
 def _list():
-    page = request.args.get('page', type=int, default=1)  # 페이지
-    books = Book.query.order_by(Book.book_name.asc())
-    per_page = 10
-    pagination = books.paginate(page, per_page)
-    book_list = pagination.items
-    book_count = Book.query.count()
-    return render_template('tmp.html', pagination=pagination, book_list = book_list, cnt = book_count)
+    return render_template('tmp.html')

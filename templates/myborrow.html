@@ -3,13 +3,13 @@
 {% block scripts %}
 <script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
 <script>
-    function return_book(book_id) {
-        alert(book_id+'번째 책을 반납하려 합니다.');        
+    function return_book(idx) {
+        alert(idx+'번째 책을 반납하려 합니다.');        
         $.ajax({
 			url: '/return_check',
 			type: 'post',
 			data: {
-				'book_id': book_id
+				'idx': idx
 			},
 			success: function (res) {
 				if (res['result'] == 'need_login') {
@@ -41,7 +41,7 @@
 <hr>
 <h4 class="title">총 {{borrow_ing}}권의 책을 대여중입니다.</h4>
 
-{% if myborrow_list %}
+{% if cnt != 0 %}
 <div class="container d-flex justify-content-around">
     <table class="table table-striped w-auto title align-middle">
         <thead class="thead-dark">
@@ -49,21 +49,22 @@
                 <th scope="col"></th>
                 <th scope="col">책</th>
                 <th scope="col">대여날짜</th>
-                <th scope="col">반납상태</th>
+                <th scope="col" colspan="2">반납여부</th>
             </tr>
         </thead>
         <tbody>
             {% for i in pagination.items%}
             <tr>
-                <th scope="row">{{loop.index * pagination.page}}</th>
+                <th scope="row">{{loop.index + 10 * (pagination.page -1)}}</th>
                 <td>{{i.book_name}}</td>
                 <td>{{i.borrow_date}}</td>
                 {% if i.borrow_state == False%}
+                    <td><button class="btn btn-primary" id={{i.id}} onclick=return_book(this.id)>반납하기</button></td>
                     <td>반납대기중</td>
-                    <td><button class="btn btn-primary" id={i.borrow_book_id}} onclick=return_book(this.id)>반납하기</button></td>
                 {% else %}
+                    <td>{{i.return_date}}</td>
                     <td>반납완료</td>
-                    <td><button class="btn btn-primary" type="submit" disabled="disabled">반납하기</button></td>
+                    <!--<td><button class="btn btn-primary" type="submit" disabled="disabled">반납하기</button></td>-->
                 {% endif %}
             </tr>
                 {% endfor %}
@@ -73,13 +74,13 @@
 
 <p class="title">총 {{cnt}}건 검색됨</p>
 {% else%}
-<h2 class="title">현재 대여 이력이 존재하지 않습니다.</h2>
 <div class="title">
     <p class="title">총 {{cnt}}건 검색됨</p>
     <a class="btn btn-primary" href="/inventory">책 목록 보러라기</a>
 </div>
 {% endif %}
 <!-- 페이징처리 시작 -->
+{% if cnt != 0 %}
 <ul class="pagination justify-content-center">
     <!-- 이전페이지 -->
     {% if pagination.has_prev %}
@@ -119,5 +120,6 @@
     </li>
     {% endif %}
 </ul>
+{% endif %}
 <!-- 페이징처리 끝 -->
 {% endblock %}
