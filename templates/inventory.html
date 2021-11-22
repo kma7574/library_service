@@ -35,19 +35,29 @@
         {% if search_count==0 %}
             <p class="title">{{search_word}}와(과) 일치하는 검색결과가 없습니다.</p>
         {% else %}
-        <p class="title">총 {{search_count}}권의 책이 검색되었습니다.</p>
+        {% if search_word %}
+        <p>검색결과 총 {{search_count}}권 &nbsp;&nbsp;&nbsp; 검색어:[{{search_word}}]</p>
+        {% else %}
+        <p>검색결과 총 {{search_count}}권</p>
+        {% endif %}
             <div class="row row-cols-1 row-cols-md-4">
                 {% for book in pagination.items%}
                 <div class="col mb-4">
-                    <div class="card h-100">
+                    <div class="card h-100 text-center">
                         <div class="card-body">
                             <a href="/inventory/{{book.id}}">
                                 <img src={{book.path}} alt="{{book.book_name}}"  title="{{book.book_name}} "width="210px" height="210px" class="card-img"/>
                             </a>
-                            <p class="card-title title">{{book.book_name}}</p>
-                            <p class="card-text title">{{book_remain_count[loop.index][0]}}권남음</p>
-                            <button class="btn btn-primary" id={{book.id}} onclick=borrow_book(this.id)>대여하기</button> 
+                            <strong class="card-title" style="font-size:1.2em;">{{book.book_name}}</strong>
                             <!--대출할 책의 id를 넘겨줌-->
+                        </div>
+                        <div class="card-footer">
+                            {% if book_remain_count[loop.index][0] <=1 %}
+                            <p class="card-text title" style="color:red;">{{book_remain_count[loop.index][0]}}권남음</p>
+                            {% else %}
+                            <p class="card-text title">잔여수량:&nbsp;<strong>{{book_remain_count[loop.index][0]}}</strong>권</p>
+                            {% endif%}
+                            <button class="btn btn-primary" id={{book.id}} onclick=borrow_book(this.id)>대여하기</button> 
                         </div>
                     </div>
                 </div>
