@@ -15,6 +15,7 @@ class Book(db.Model):
     description = db.Column(db.String(800), nullable = False)
     link = db.Column(db.String(512), nullable = False)
     path = db.Column(db.String(256))
+    rating = db.Column(db.Numeric(precision=2, scale=1), default=0)
 
 
 class Member(db.Model):
@@ -71,4 +72,22 @@ class Book_remain(db.Model):
 	def __init__(self, remain_book_id, remain_book_count):
 		self.remain_book_id = remain_book_id
 		self.remain_book_count = remain_book_count
+
+
+class Review(db.Model):
+    __tablename__ = "book_review"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    created =  db.Column(db.TIMESTAMP, server_default=db.func.now(),onupdate=db.func.now())
+    book_id = db.Column(db.Integer, db.ForeignKey(Book.id), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(Member.id), nullable=False)
+
+    def __init__(self, user_id, book_id, content, score):
+        self.content = content
+        self.score = score
+        self.book_id = book_id
+        self.user_id = user_id
+
 		
