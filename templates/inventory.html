@@ -37,16 +37,16 @@
         {% else %}
         <p class="title">총 {{search_count}}권의 책이 검색되었습니다.</p>
             <div class="row row-cols-1 row-cols-md-4">
-                {% for book in range(book_list | length)%}
+                {% for book in pagination.items%}
                 <div class="col mb-4">
                     <div class="card h-100">
                         <div class="card-body">
-                            <a href="/inventory/{{book_list[book].id}}">
-                                <img src={{book_list[book].path}} alt="" class="card-img"/>
+                            <a href="/inventory/{{book.id}}">
+                                <img src={{book.path}} alt="{{book.book_name}}"  title="{{book.book_name}} "width="210px" height="210px" class="card-img"/>
                             </a>
-                            <h5 class="card-title title">{{book_list[book].book_name}}</h5>
-                            <p class="card-text title">{{book_remain_count[book][0]}}권남음</p>
-                            <button class="btn btn-primary" id={{book_list[book].id}} onclick=borrow_book(this.id)>대여하기</button> 
+                            <p class="card-title title">{{book.book_name}}</p>
+                            <p class="card-text title">{{book_remain_count[loop.index][0]}}권남음</p>
+                            <button class="btn btn-primary" id={{book.id}} onclick=borrow_book(this.id)>대여하기</button> 
                             <!--대출할 책의 id를 넘겨줌-->
                         </div>
                     </div>
@@ -55,5 +55,45 @@
             </div>
         {% endif %}
     </div>
+    <ul class="pagination justify-content-center">
+        <!-- 이전페이지 -->
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ pagination.prev_num }}">이전</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
+        {% endif %}
+        {% for page_num in pagination.iter_pages() %}
+        {% if page_num %}
+        {% if page_num != pagination.page %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+        </li>
+        {% else %}
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ page_num }}</a>
+        </li>
+        {% endif %}
+        {% else %}
+        <li class="disabled">
+            <a class="page-link" href="#">...</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        <!-- 다음페이지 -->
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ pagination.next_num }}">다음</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+        </li>
+        {% endif %}
+    </ul>
+<!-- 페이징처리 끝 -->
 <hr>
 {% endblock %}

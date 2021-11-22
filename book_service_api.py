@@ -10,17 +10,22 @@ bcrypt = Bcrypt()
 
 @book_service.route('/inventory',  methods=['GET', 'POST'])
 def show_list():
+
     if request.method == 'POST':
         search_word = request.form['searchWord']
-        book_list = db.session.query(Book).filter(Book.book_name.like(f'%{search_word}%')).all()
-        search_count = len(book_list)
+        book_list = db.session.query(Book).filter(Book.book_name.like(f'%{search_word}%'))
+        search_count =book_list.count()
         book_remain_count = db.session.query(Book_remain.remain_book_count).all()
-        return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word, book_remain_count=book_remain_count)
+        page = request.args.get('page', type=int, default=1)  # 페이지
+        pagination = book_list.paginate(page, per_page=8)
+        return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word, book_remain_count=book_remain_count, pagination=pagination)
     else:
-        book_list = db.session.query(Book).all()
-        search_count = len(book_list)
+        book_list = db.session.query(Book)
+        search_count = book_list.count()
         book_remain_count = db.session.query(Book_remain.remain_book_count).all()
-        return render_template('inventory.html', book_list = book_list, search_count = search_count, book_remain_count=book_remain_count)
+        page = request.args.get('page', type=int, default=1)  # 페이지
+        pagination = book_list.paginate(page, per_page=8)
+        return render_template('inventory.html', book_list = book_list, search_count = search_count, book_remain_count=book_remain_count, pagination=pagination)
 
 
 @book_service.route('/inventory/<int:book_id>',  methods=['GET', 'POST'])
