@@ -2,7 +2,7 @@
 
 {% block scripts %}
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!--카카오지도 api-->
-<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
+<!--<script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>-->
 <script>
 	function search_addr() {
 		new daum.Postcode({
@@ -35,13 +35,85 @@
 			success: function (res) {
 				if (res['result'] == 'overlap') {
 					alert("이미 사용중인 ID입니다!");
+					$('#userId').val('');
+					alert("www")
+					return false
 				}
 				else{
 					alert("사용 가능한 ID입니다!");
+					return true
 				}
 			}
 		})
 	}
+
+	function pw_check(){
+		var pw = $("#userPw").val()
+		var num = pw.search(/[0-9]/g); //숫자
+		var eng = pw.search(/[a-z]/ig);//영어
+		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);//특수문자
+
+		if (pw.length < 8 || pw.length > 20) {
+			alert("8자리 ~ 20자리 이내로 입력해주세요.");
+			$('#userPw').val('');
+			$('#userPw').focus();
+			return false
+		} else if (pw.search(/\s/) != -1) {
+			alert("비밀번호는 공백 없이 입력해주세요.");
+			$('#userPw').val('');
+			$('#userPw').focus();
+			return false
+		} else if ((num < 0 && eng < 0) || (eng < 0 && spe < 0) || (spe < 0 && num < 0)) {
+			alert("영문,숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요.");
+			$('#userPw').val('');
+			$('#userPw').focus();
+			return false
+		} else {
+			$('#userPw2').focus();
+			return true
+		}
+
+	}
+
+	function pw_same(){
+		var pw = $("#userPw").val()
+		var pw2 = $("#userPw2").val()
+
+		if (pw === pw2) {
+			alert("일치");
+			$('#name').focus();
+			return true
+		} else {
+			alert("불일치");
+			$('#userPw2').val('');
+			$('#userPw2').focus();
+			return false
+		}
+	}
+
+	function name_check(){
+		var name = $("#name").val()
+		alert(name)
+		var kor = name.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g);
+		var num = name.search(/[0-9]/g);
+		var eng = name.search(/[a-z]/ig);
+		var spe = name.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+		console.log(kor, eng, num, spe)
+		if(kor==0 && eng<0 && num<0 && spe<0){
+			alert("한글만 입력했네요!");
+			return true;
+		}
+		else if(kor<0 && eng==0 && num<0 && spe<0){
+			alert("영어만 입력했네요!");
+			return true;
+		}
+		else {
+			alert("규칙을 따라주십쇼")
+			$('#name').val('');
+			$('#name').focus();
+		}
+	}
+
 	function regist() {
 		let user_id = $('#userId').val()
 		let user_pw = $('#userPw').val()
@@ -75,6 +147,7 @@
 				if (res['result'] == 'overlap') {
 					alert("이미 사용중인 ID입니다!");
 				}
+				
 				else if (res['result'] == 'success') {
 					alert("회원가입 성공!");
 					window.location.href = '/login'
@@ -106,19 +179,19 @@
 			<div class="mb-3 row">
 				<label class="col-sm-2 col-form-label">비밀번호</label>
 				<div class="col-sm-10">
-					<input type="password" class="form-control" id="userPw">
+					<input type="password" onchange=pw_check() class="form-control" id="userPw" name="userPw">
 				</div>
 			</div>
 			<div class="mb-3 row">
 				<label class="col-sm-2 col-form-label">비밀번호 확인</label>
 				<div class="col-sm-10">
-					<input type="password" class="form-control" id="userPw2">
+					<input type="password" onchange=pw_same() class="form-control" id="userPw2">
 				</div>
 			</div>
 			<div class="mb-3 row">
 				<label class="col-sm-2 col-form-label">이름</label>
 				<div class="col-sm-10">
-					<input type="tel" class="form-control" id="name">
+					<input type="tel" onchange=name_check() class="form-control" id="name">
 				</div>
 			</div>
 			<div class="mb-3 row">
