@@ -1,7 +1,7 @@
 from datetime import datetime
 from operator import add
 from flask import redirect, request, render_template, jsonify, Blueprint, session, g, Flask
-from models import Book, Book_borrow, Book_remain, Member
+from models import Book, Book_borrow, Book_remain, Member, Book_review
 from db_connect import db
 from flask_bcrypt import Bcrypt
 
@@ -13,34 +13,57 @@ def show_list():
 
     if request.method == 'POST':
         search_word = request.form['searchWord']
-        book_list = db.session.query(Book).filter(Book.book_name.like(f'%{search_word}%'))
-        search_count =book_list.count()
-        book_remain_count = db.session.query(Book_remain.remain_book_count).all()
-        page = request.args.get('page', type=int, default=1)  # 페이지
-        pagination = book_list.paginate(page, per_page=8)
-        return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word, book_remain_count=book_remain_count, pagination=pagination)
-    else:
-        book_list = db.session.query(Book)
+        book_list = db.session.query(Book.id, Book.book_name, Book.path, Book_remain.remain_book_count).join(Book, Book_remain.id == Book.id).filter(Book.book_name.like(f'%{search_word}%'))
         search_count = book_list.count()
-        book_remain_count = db.session.query(Book_remain.remain_book_count).all()
         page = request.args.get('page', type=int, default=1)  # 페이지
         pagination = book_list.paginate(page, per_page=8)
-        return render_template('inventory.html', book_list = book_list, search_count = search_count, book_remain_count=book_remain_count, pagination=pagination)
+        return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word, pagination=pagination)
+    else:
+        book_list = book_list = db.session.query(Book.id, Book.book_name, Book.path, Book_remain.remain_book_count).join(Book, Book_remain.id == Book.id)
+        search_count = book_list.count()
+        page = request.args.get('page', type=int, default=1)  # 페이지
+        pagination = book_list.paginate(page, per_page=8)
+        return render_template('inventory.html', book_list = book_list, search_count = search_count, pagination=pagination)
 
 
 @book_service.route('/inventory/<int:book_id>',  methods=['GET', 'POST'])
 def show_detail(book_id):
-    book_info = Book.query.filter(Book.id == book_id).first()
-    return render_template('detail.html', book_info = book_info, book_id=book_id)
+    if request.method =='GET':
+        book_info = Book.query.filter(Book.id == book_id).first()
+        review_data = Book_review.query.filter(Book_review.book_id == book_id).order_by(Book_review.created.desc()).all()
+        return render_template('detail.html', book_info = book_info, book_id=book_id, review_data=review_data)
+    else:
+        content = request.form['content']
+        score = request.form['score']
+        id = db.session.query(Member.id).filter(Member.user_id == g.user.user_id).first()
+
+        review = Book_review(id[0], book_id, content, score)
+        db.session.add(review)
+        db.session.commit()
+        # 리뷰댓글의 모든평점합 / 리뷰댓글 개수
+        
+        review_score_sum = db.session.query(db.func.sum(Book_review.score)).first()[0]
+        review_count = Book_review.query.count()
+        update_rating = Book.query.filter(Book.id == Book_review.book_id).first()
+        update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
+        db.session.commit()
+        
+        return jsonify({"result":"success"})
+
 
 
 @book_service.route('/borrow_check', methods=['POST'])
 def borrow_check():
-    book_id = request.form['book_id']
-    user_id = session.get('login') # 로그인값은 불러오는것같음
+    book_id = request.form['book_id'] #숫자값
+    user_id = session.get('login') # 로그인값(숫자값)은 불러오는것같음
     if user_id is None:
         return jsonify({"result": "need_login"})
-    # 잔여수량 테이블에 남은 권수 확인하고 대출처리한다음 수량 -1 업데이트
+    '''
+    잔여수량 테이블에 남은 권수 확인하고 대출처리한다음 수량 -1 업데이트
+    '''
+    record = db.session.query(Book_borrow).filter((Book_borrow.borrow_book_id == book_id) & (Book_borrow.borrow_user_id == user_id))
+    if record.count() >= 1:
+        return jsonify({"result": "already_borrow"})
     remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_remain.remain_book_id == book_id).first()
     # print(remain_count)
     if remain_count[0] == 0: #대출이 불가능한 경우
@@ -89,6 +112,8 @@ def return_check():
         # 반납하기 버튼을누르면 해당 아이디에 해당하는 책의 남은 수량카운트를 +1 해준다, borrow_state값을 0에서 1로 바꿔준다.
         # remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_borrow.id == book_id).first()
         borrow = db.session.query(Book_borrow).filter(Book_borrow.borrow_user_id == user_id).offset(int(idx)-1).first()
+        print(user_id)
+        print(borrow)
         remain_count = db.session.query(Book_remain).filter(Book_remain.remain_book_id == Book_borrow.borrow_book_id).all()
         if remain_count[0] == 5: #책의 최대수량은 5인데 반납하기전 권수가 5권이면 뭔가 오류가 생긴것(각 책의 최대수량은 추후 변경 가능)
             return jsonify({"result": "unknown_error"})

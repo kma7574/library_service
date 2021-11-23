@@ -19,6 +19,10 @@
 					alert("로그인이 필요한 기능입니다.");
                     window.location.href = '/login'
 				}
+                else if (res['result'] == 'already_borrow'){
+					alert("이미 대여하신 책입니다. 다른책을 골라보세요.");
+                    window.location.href = '/inventory'
+				}
 				else if (res['result'] == 'ok'){
 					alert("대여가 완료되었습니다");
 				}
@@ -49,14 +53,15 @@
                                 <img src={{book.path}} alt="{{book.book_name}}"  title="{{book.book_name}} "width="210px" height="210px" class="card-img"/>
                             </a>
                             <strong class="card-title" style="font-size:1.2em;">{{book.book_name}}</strong>
-                            <!--대출할 책의 id를 넘겨줌-->
                         </div>
                         <div class="card-footer">
-                            {% if book_remain_count[loop.index][0] <=1 %}
-                            <p class="card-text title" style="color:red;">{{book_remain_count[loop.index][0]}}권남음</p>
+                            <p>평점:&nbsp;{{book.rating}}</p>
+                            {% if book.remain_book_count <= 1 %}
+                            <p class="card-text title" style="color:red;">잔여수량:&nbsp;<strong>{{book.remain_book_count}}</strong>권</p>
                             {% else %}
-                            <p class="card-text title">잔여수량:&nbsp;<strong>{{book_remain_count[loop.index][0]}}</strong>권</p>
+                            <p class="card-text title">잔여수량:&nbsp;<strong>{{book.remain_book_count}}</strong>권</p>
                             {% endif%}
+                            <!--대출할 책의 id를 넘겨줌-->
                             <button class="btn btn-primary" id={{book.id}} onclick=borrow_book(this.id)>대여하기</button> 
                         </div>
                     </div>
