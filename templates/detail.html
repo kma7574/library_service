@@ -1,13 +1,43 @@
 {% extends 'base.html' %}
+{% block scripts %}
+
+<script>
+    function postContent(id){
+        let content = $('#my-content').val()
+        let sc = document.getElementById("score")
+        let scIdx = document.getElementById("score").options.selectedIndex
+        let score = sc.options[scIdx].value
+        //alert(score+'점')
+        //alert(id)
+        $.ajax({
+            url: '/inventory/' + id,
+            type: 'post',
+            data: {
+                    'content': content,
+                    'score': score
+            },
+            success: function (res) {
+                    let result = res['result']
+                    if (result == "success") {
+                            window.location.reload()
+                    } else {
+                            alert("저장오류!")
+                    }
+            }
+        })
+    }
+
+</script>
+{% endblock %}
 {% block content%}
 {{book_id}}번째 책입니다.
-
-
-
 <hr>
 <div class="container d-flex justify-content-around">
-    <img src="{{book_info.path}}" class="rounded float-left" alt="book">
-    <table class="table table-striped w-auto  ">
+    <!--이미지 클릭시 새창에서 구매링크-->
+    <a href= "{{book_info.link}}" target="_blank">
+        <img src="{{book_info.path}}" width="300px" height="350px" class="rounded float-left" alt="book" title="구매하러가기">
+    </a>
+    <table class="table table-striped w-auto h-75% table-no-margin">
         <tbody>
             <tr>
                 <td>책이름</td>
@@ -27,14 +57,64 @@
             </tr>
             <tr>
                 <td>페이지 수</td>
-                <td>{{book_info.pages}}</td>
+                <td>{{book_info.pages}}p</td>
             </tr>
             <tr>
                 <td>ISBN 코드</td>
                 <td>{{book_info.isbn}}</td>
             </tr>
+            <tr>
+                <td>평점</td>
+                <td>{{book_info.rating}}/5.0점</td>
+            </tr>
         </tbody>
     </table>
+</div>
+<p class="title">책 이미지 클릭시 구매링크로 이동가능합니다.</p>
+<hr>
+
+<div class="container justify-content-around">
+    <div class="card">
+        <h5 class="card-header">새 글 작성</h5>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">{{g.user.user_id}}님, 글을 작성하세요</label>
+                <select id= "score" name = "score" onchange="handleOnChange(this)">
+                    <option value = "1" selected>1점</option>
+                    <option value = "2">2점</option>
+                    <option value = "3">3점</option>
+                    <option value = "4">4점</option>
+                    <option value = "5">5점</option>
+                 </select>
+                <textarea id='my-content' class="form-control" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="postContent('{{book_id}}')">작성하기</button>
+        </div>
+    </div>
+
+    {% for review in review_data %}
+    <div class="card mt-2">
+        <div class="card-header">
+            <div>{{g.user.user_id}}    {{review.score}}점</div>
+            <div>{{review.created}} 작성</div>
+        </div><!--작성자 아이디(이메일)-->
+        
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">{{review.author}}</label>
+                <div id='edit-area'>
+                    <p id='userContent{{review.id}}'>{{review.content}}</p>
+                </div>
+            </div>
+        </div>
+    
+    
+        <div class="card-footer text-muted">
+            <button class="btn btn-sm btn-danger" onclick="deletePost('{{review.id}}')">삭제하기</button>
+            <button id='editBtn{{review.id}}' class="btn btn-sm btn-warning" onclick="updatePost('{{review.id}}')">수정하기</button>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 <hr>
 {% endblock %}

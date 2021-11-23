@@ -74,7 +74,7 @@ class Book_remain(db.Model):
 		self.remain_book_count = remain_book_count
 
 
-class Review(db.Model):
+class Book_review(db.Model):
     __tablename__ = "book_review"
 
     id = db.Column(db.Integer, primary_key=True)
