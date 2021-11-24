@@ -19,8 +19,11 @@
             success: function (res) {
                     let result = res['result']
                     if (result == "success") {
-                            window.location.reload()
-                    } else {
+                        window.location.reload()
+                    }else if (result == "already_review") {
+                        alert("이미 리뷰를 남기셨네요!")
+                    } 
+                    else {
                             alert("저장오류!")
                     }
             }
@@ -134,16 +137,16 @@
 <div class="container justify-content-around">
     {% if g.user.user_id %}
     <div class="card">
-        <h5 class="card-header">새 글 작성</h5>
+        <h5 style="display:inline-block;" class="card-header">새 글 작성</h5>
         <div class="card-body">
             <div class="mb-3">
-                <label class="form-label">{{g.user.user_id}}님, 글을 작성하세요</label>
+                <label class="form-label">{{g.user.user_id}}님, 글을 작성하세요</label>&nbsp;&nbsp;
                 <select id= "score" name = "score" onchange="handleOnChange(this)">
-                    <option value = "1" selected>1점</option>
-                    <option value = "2">2점</option>
-                    <option value = "3">3점</option>
-                    <option value = "4">4점</option>
-                    <option value = "5">5점</option>
+                    <option value = "1">⭐</option>
+                    <option value = "2">⭐⭐</option>
+                    <option value = "3">⭐⭐⭐</option>
+                    <option value = "4">⭐⭐⭐⭐</option>
+                    <option value = "5"selected>⭐⭐⭐⭐⭐</option>
                  </select>
                 <textarea id='my-content' class="form-control" rows="3"></textarea>
             </div>
@@ -156,7 +159,19 @@
     {% for review in review_data %}
     <div class="card mt-2">
         <div class="card-header">
+            {% if review.score==1 %}
+            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐</div>
+            {% elif review.score==2 %}
+            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐</div>
+            {% elif review.score==3 %}
+            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐</div>
+            {% elif review.score==4 %}
+            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐</div>
+            {% elif review.score==5 %}
+            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐⭐</div>
+            {% else %}
             <div>{{g.user.user_id}}    {{review.score}}점</div>
+            {% endif %}
             <div>{{review.created}} 작성</div>
         </div><!--작성자 아이디(이메일)-->
         
@@ -171,8 +186,10 @@
     
     
         <div class="card-footer text-muted">
-            <button class="btn btn-sm btn-danger" onclick="deleteContent('{{review.id}}')">삭제하기</button>
-            <button id='editBtn{{review.id}}' class="btn btn-sm btn-warning" onclick="modifycontent('{{review.id}}')">수정하기</button>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-sm btn-danger" onclick="deleteContent('{{review.id}}')">삭제하기</button>
+                <button id='editBtn{{review.id}}' class="btn btn-sm btn-warning" style="margin-left: 8px;" onclick="modifycontent('{{review.id}}')">수정하기</button>
+            </div>
         </div>
     </div>
     {% endfor %}

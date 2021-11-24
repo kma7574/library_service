@@ -36,7 +36,9 @@ def show_detail(book_id):
         content = request.form['content']
         score = request.form['score']
         id = db.session.query(Member.id).filter(Member.user_id == g.user.user_id).first()
-
+        check_review=Book_review.query.filter(Book_review.user_id == id[0], Book_review.book_id == book_id).count()
+        if check_review >=1: #사용자가 이미 리뷰를 남겼음
+            return jsonify({"result":"already_review"})
         review = Book_review(id[0], book_id, content, score)
         db.session.add(review)
         db.session.commit()
