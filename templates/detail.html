@@ -42,12 +42,40 @@
                 success: function (res) {
                     if (res['result'] == 'success') {
                         alert("리뷰를 삭제하였습니다")
-                        window.location.href = '/inventory/' + id
+                        window.location.reload()
                     } else {
                         alert("리뷰를 삭제할 수 없습니다")
                     }
                 }
         })}
+    }
+
+    function updatecontent(id) {
+        let content = $(`#userEidContent${id}`).val()
+        $.ajax({
+            url: '/inventory/' + id,
+            type: 'PATCH',
+            data: {
+                "id": id,
+                "content": content
+            },
+            success: function (res) {
+                if (res['result'] == 'success') {
+                    alert("리뷰를 수정하였습니다.")
+                    window.location.reload()
+                }
+            }
+        })
+    }
+    function modifycontent(id) {
+        let content = $(`#userContent${id}`).text()
+        let tmpHtml = `<textarea id=userEidContent${id} class="form-control" rows="3"></textarea>`
+        let tmpBtn = `<button class="btn btn-sm btn-primary" onclick="updatecontent(${id})">수정완료</button>`
+        $("#edit-area").empty()
+        $("#edit-area").append(tmpHtml)
+        $(`#editBtn${id}`).hide()
+        $(`#userEidContent${id}`).val(content)
+        $("#edit-area").append(tmpBtn)
 
     }
 
@@ -144,7 +172,7 @@
     
         <div class="card-footer text-muted">
             <button class="btn btn-sm btn-danger" onclick="deleteContent('{{review.id}}')">삭제하기</button>
-            <button id='editBtn{{review.id}}' class="btn btn-sm btn-warning" onclick="updatePost('{{review.id}}')">수정하기</button>
+            <button id='editBtn{{review.id}}' class="btn btn-sm btn-warning" onclick="modifycontent('{{review.id}}')">수정하기</button>
         </div>
     </div>
     {% endfor %}

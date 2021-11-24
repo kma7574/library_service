@@ -143,6 +143,17 @@ def delete_content(id):
     else:
         return jsonify({"result": "fail"})
 
+
+@book_service.route("/inventory/<int:id>", methods=["PATCH"])
+def update_post(id):
+    id = request.form['id']
+    content = request.form['content']
+    author = Member.query.filter(Member.id == session['login']).first()
+    data = Book_review.query.filter(Book_review.id == id).first()
+    data.content = content
+    db.session.commit()
+    return jsonify({"result":"success"})
+
 @book_service.route('/temp')
 def _list():
     return render_template('tmp.html')
