@@ -132,6 +132,17 @@ def return_check():
         return redirect('/')
 
 
+@book_service.route('/inventory/<int:id>', methods=['DELETE'])
+def delete_content(id):
+    id = request.form['id']
+    data = Book_review.query.filter(Book_review.id == id).first()
+    if data is not None:
+        db.session.delete(data)
+        db.session.commit()
+        return jsonify({"result": "success"})
+    else:
+        return jsonify({"result": "fail"})
+
 @book_service.route('/temp')
 def _list():
     return render_template('tmp.html')

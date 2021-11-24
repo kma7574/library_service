@@ -27,6 +27,30 @@
         })
     }
 
+    function deleteContent(id) {
+        var msg = "해당 리뷰를 삭제하시겠습니까?"
+        var flag = confirm(msg);
+        
+        if (flag==true){    
+            let author = `{{g.user.user_id}}`
+            $.ajax({
+                url:  '/inventory/' + id,
+                type: 'DELETE',
+                data: {
+                    'id': id
+                },
+                success: function (res) {
+                    if (res['result'] == 'success') {
+                        alert("리뷰를 삭제하였습니다")
+                        window.location.href = '/inventory/' + id
+                    } else {
+                        alert("리뷰를 삭제할 수 없습니다")
+                    }
+                }
+        })}
+
+    }
+
 </script>
 {% endblock %}
 {% block content%}
@@ -37,11 +61,11 @@
     <a href= "{{book_info.link}}" target="_blank">
         <img src="{{book_info.path}}" width="300px" height="350px" class="rounded float-left" alt="book" title="구매하러가기">
     </a>
-    <table class="table table-striped w-auto h-75% table-no-margin">
+    <table class="table table-striped w-50 table-no-margin">
         <tbody>
             <tr>
-                <td>책이름</td>
-                <td>{{book_info.book_name}}</td>
+                <td style="width: 25%">책이름</td>
+                <td style="width: 75%">{{book_info.book_name}}</td>
             </tr>
             <tr>
                 <td>출판사</td>
@@ -70,10 +94,17 @@
         </tbody>
     </table>
 </div>
-<p class="title">책 이미지 클릭시 구매링크로 이동가능합니다.</p>
+<div class="container d-flex justify-content-around">
+    <div class="card">
+        <div class="card-body">
+            <p>{{book_info.description}}</p>
+        </div>
+    </div>
+</div>
+<p class="title" style="color: gray;"><책 이미지 클릭시 구매링크로 이동가능합니다.></p>
 <hr>
-
 <div class="container justify-content-around">
+    {% if g.user.user_id %}
     <div class="card">
         <h5 class="card-header">새 글 작성</h5>
         <div class="card-body">
@@ -88,10 +119,12 @@
                  </select>
                 <textarea id='my-content' class="form-control" rows="3"></textarea>
             </div>
-            <button class="btn btn-primary" onclick="postContent('{{book_id}}')">작성하기</button>
+            <div class="d-flex justify-content-end"><button class="btn btn-primary" onclick="postContent('{{book_id}}')">작성하기</button></div>
         </div>
     </div>
+    {% endif %}
 
+    {% if review_data %}
     {% for review in review_data %}
     <div class="card mt-2">
         <div class="card-header">
@@ -110,11 +143,18 @@
     
     
         <div class="card-footer text-muted">
-            <button class="btn btn-sm btn-danger" onclick="deletePost('{{review.id}}')">삭제하기</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteContent('{{review.id}}')">삭제하기</button>
             <button id='editBtn{{review.id}}' class="btn btn-sm btn-warning" onclick="updatePost('{{review.id}}')">수정하기</button>
         </div>
     </div>
     {% endfor %}
+    {% else %}
+    <div class="card">
+        <div class="card-body">
+            <h3 class= "title">아직 등록된 리뷰가 없습니다. 첫번째로 리뷰를 남겨주세요!</h3>
+        </div>
+    </div>
+    {% endif %}
 </div>
 <hr>
 {% endblock %}
