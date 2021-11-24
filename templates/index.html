@@ -1,5 +1,61 @@
 {% extends 'base.html' %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+{% endblock %}
 
 {% block content %}
-<h2>엘리스 도서관에 오신 여러분을 환영합니다!</h2>
+<h2 class="title">엘리스 도서관에 오신 여러분을 환영합니다!</h2>
+<div class="container">
+    <div class="countdown">
+        <div id="clock" class="card card-default">
+            <div class="card-body">
+                <h2 class="card-title mb-4">수료까지</h2>
+                <div class="clock-section">
+                    <div id="days" class="value text-warning">00</div>
+                    <div class="clock-label">DAYS</div>
+                </div>
+                <div class="clock-section">
+                    <div id="hours" class="value text-warning">00</div>
+                    <div class="clock-label">HOURS</div>
+                </div>
+                <div class="clock-section">
+                    <div id="minutes" class="value text-warning">00</div>
+                    <div class="clock-label">MINUTES</div>
+                </div>
+                <div class="clock-section">
+                    <div id="seconds" class="value text-warning">00</div>
+                    <div class="clock-label">SECONDS</div>
+                </div>
+                <h2 class="card-title mb-4">남았습니다!</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var targetDate = moment('3/12/2022');
+    var $days = $('#days');
+    var $hours = $('#hours');
+    var $minutes = $('#minutes');
+    var $seconds = $('#seconds');
+  
+    setInterval(function(){
+        var now = moment();
+        var timeLeft = moment.duration(targetDate.diff(now));
+        //console.log(timeLeft)
+        updateClock(timeLeft);
+    }, 1000)
+  
+    function updateClock(remain){
+        let days = Math.floor(remain.asDays());
+        let hrs = Math.floor(remain.asHours()) % 24;
+        let mins = Math.floor(remain.asMinutes()) % 60;
+        let secs = Math.floor(remain.asSeconds()) % 60;
+  
+        $days.text(days);
+        $hours.text(hrs);
+        $minutes.text(mins);
+        $seconds.text(secs);
+    }
+  </script>
 {% endblock %}
