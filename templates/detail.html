@@ -55,12 +55,14 @@
 
     function updatecontent(id) {
         let content = $(`#userEidContent${id}`).val()
+        let score = change_score
         $.ajax({
             url: '/inventory/' + id,
             type: 'PATCH',
             data: {
                 "id": id,
-                "content": content
+                "content": content,
+                "score":score
             },
             success: function (res) {
                 if (res['result'] == 'success') {
@@ -70,16 +72,28 @@
             }
         })
     }
+    let change_score = 0 //리뷰 수정시 바꾼평점을 담을 변수
     function modifycontent(id) {
         let content = $(`#userContent${id}`).text()
         let tmpHtml = `<textarea id=userEidContent${id} class="form-control" rows="3"></textarea>`
         let tmpBtn = `<button class="btn btn-sm btn-primary" onclick="updatecontent(${id})">수정완료</button>`
+        let select = `<select id= "mdscore" name = "mdscore" onchange="mdChange()">
+                        <option value = "1">⭐</option>
+                        <option value = "2">⭐⭐</option>
+                        <option value = "3">⭐⭐⭐</option>
+                        <option value = "4">⭐⭐⭐⭐</option>
+                        <option value = "5">⭐⭐⭐⭐⭐</option>
+                    </select>`
+
         $("#edit-area").empty()
+        $("#edit-area").append(select)
         $("#edit-area").append(tmpHtml)
         $(`#editBtn${id}`).hide()
         $(`#userEidContent${id}`).val(content)
         $("#edit-area").append(tmpBtn)
-
+        $("#mdscore").change(function(){
+            change_score = this.value;
+        })
     }
 
 </script>
