@@ -141,6 +141,11 @@ def delete_content(id):
     if data is not None:
         db.session.delete(data)
         db.session.commit()
+        review_score_sum = db.session.query(db.func.sum(Book_review.score)).first()[0]
+        review_count = Book_review.query.count()
+        update_rating = Book.query.filter(Book.id == Book_review.book_id).first()
+        update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
+        db.session.commit()
         return jsonify({"result": "success"})
     else:
         return jsonify({"result": "fail"})
@@ -153,6 +158,11 @@ def update_post(id):
     author = Member.query.filter(Member.id == session['login']).first()
     data = Book_review.query.filter(Book_review.id == id).first()
     data.content = content
+    db.session.commit()
+    review_score_sum = db.session.query(db.func.sum(Book_review.score)).first()[0]
+    review_count = Book_review.query.count()
+    update_rating = Book.query.filter(Book.id == Book_review.book_id).first()
+    update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
     db.session.commit()
     return jsonify({"result":"success"})
 
