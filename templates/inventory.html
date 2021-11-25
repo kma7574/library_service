@@ -55,7 +55,20 @@
                             <strong class="card-title" style="font-size:1.2em;">{{book.book_name}}</strong>
                         </div>
                         <div class="card-footer">
-                            <p>평점:&nbsp;{{book.rating}}</p>
+                            {% if book.rating >= 5 %}
+                            <div style="display:inline-block;">⭐⭐⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;"></div>
+                            {% elif book.rating >= 4 %}
+                            <div style="display:inline-block;">⭐⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;">☆</div>
+                            {% elif book.rating >= 3 %}
+                            <div style="display:inline-block;">⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;">☆☆</div>
+                            {% elif book.rating >= 2 %}
+                            <div style="display:inline-block;">⭐⭐</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆</div>
+                            {% elif book.rating >= 1 %}
+                            <div style="display:inline-block;">⭐</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆☆</div>
+                            {% else%}
+                            <div style="display:inline-block;"></div><div style="display:inline-block; font-size:1.2rem;">☆☆☆☆☆</div>
+                            {% endif %}
+
                             {% if book.remain_book_count <= 1 %}
                             <p class="card-text title" style="color:red;">잔여수량:&nbsp;<strong>{{book.remain_book_count}}</strong>권</p>
                             {% else %}

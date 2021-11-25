@@ -174,17 +174,17 @@
     <div class="card mt-2">
         <div class="card-header">
             {% if review.score==1 %}
-            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐</div>
+            <div style="display:inline-block;">{{g.user.user_id}}    &nbsp;&nbsp;⭐</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆☆</div>
             {% elif review.score==2 %}
-            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐</div>
+            <div style="display:inline-block;">{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆</div>
             {% elif review.score==3 %}
-            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐</div>
+            <div style="display:inline-block;">{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;">☆☆</div>
             {% elif review.score==4 %}
-            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐</div>
+            <div style="display:inline-block;">{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;">☆</div>
             {% elif review.score==5 %}
-            <div>{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐⭐</div>
+            <div style="display:inline-block;">{{g.user.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;"></div>
             {% else %}
-            <div>{{g.user.user_id}}    {{review.score}}점</div>
+            <div style="display:inline-block;">{{g.user.user_id}}    &nbsp;&nbsp;</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆☆☆</div>
             {% endif %}
             <div>{{review.created}} 작성</div>
         </div><!--작성자 아이디(이메일)-->
