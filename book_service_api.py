@@ -30,7 +30,10 @@ def show_list():
 def show_detail(book_id):
     if request.method =='GET':
         book_info = Book.query.filter(Book.id == book_id).first()
-        review_data = Book_review.query.filter(Book_review.book_id == book_id).order_by(Book_review.created.desc()).all()
+        review_data = db.session.query(Book_review.score, Book_review.created,Book_review.content, Member.user_id).join(Member,Member.id == Book_review.user_id).filter(Book_review.book_id == book_id).order_by(Book_review.created.desc()).all()
+        print('======================')
+        print(len(review_data))
+        print('======================')
         return render_template('detail.html', book_info = book_info, book_id=book_id, review_data=review_data)
     else:
         content = request.form['content']
