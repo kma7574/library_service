@@ -4,10 +4,12 @@
 <script>
     function postContent(id){
         let content = $('#my-content').val()
-        let sc = document.getElementById("score")
-        let scIdx = document.getElementById("score").options.selectedIndex
-        let score = sc.options[scIdx].value
-        //alert(score+'점')
+        // let sc = document.getElementById("score")
+        // let scIdx = document.getElementById("score").options.selectedIndex
+        // let score = sc.options[scIdx].value
+
+        let score = omg
+        alert(score+'점점점')
         //alert(id)
         $.ajax({
             url: '/inventory/' + id,
@@ -95,6 +97,12 @@
             change_score = this.value;
         })
     }
+    var omg = 0 //리뷰 작성시 입력한 평점
+    const drawStar = (target) => {
+        document.querySelector(`.star span`).style.width = `${target.value * 10}%`;
+        omg = (rating.value/2)
+        //console.log(omg)
+    }
 
 </script>
 {% endblock %}
@@ -154,14 +162,21 @@
         <h5 style="display:inline-block;" class="card-header">새 글 작성</h5>
         <div class="card-body">
             <div class="mb-3">
-                <label class="form-label">{{g.user.user_id}}님, 글을 작성하세요</label>&nbsp;&nbsp;
-                <select id= "score" name = "score" onchange="handleOnChange(this)">
-                    <option value = "1">⭐</option>
-                    <option value = "2">⭐⭐</option>
-                    <option value = "3">⭐⭐⭐</option>
-                    <option value = "4">⭐⭐⭐⭐</option>
-                    <option value = "5"selected>⭐⭐⭐⭐⭐</option>
-                 </select>
+                <div style="display:flex;">
+                    <label>{{g.user.user_id}}님, 글을 작성하세요</label>&nbsp;&nbsp;
+                    <!-- <select id= "score" name = "score" onchange="handleOnChange(this)">
+                        <option value = "1">⭐</option>
+                        <option value = "2">⭐⭐</option>
+                        <option value = "3">⭐⭐⭐</option>
+                        <option value = "4">⭐⭐⭐⭐</option>
+                        <option value = "5"selected>⭐⭐⭐⭐⭐</option>
+                    </select> -->     
+                </div>
+                <span style="display:inline-block;" class="star">
+                    ★★★★★
+                    <span>★★★★★</span>
+                    <input type="range" id="rating" oninput="drawStar(this)" value="1" step="2" min="0" max="10">           
+                </span>
                 <textarea id='my-content' class="form-control" rows="3"></textarea>
             </div>
             <div class="d-flex justify-content-end"><button class="btn btn-primary" onclick="postContent('{{book_id}}')">작성하기</button></div>

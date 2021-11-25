@@ -44,10 +44,18 @@ def show_detail(book_id):
         db.session.commit()
         # 리뷰댓글의 모든평점합 / 리뷰댓글 개수
         
-        review_score_sum = db.session.query(db.func.sum(Book_review.score)).first()[0]
-        review_count = Book_review.query.count()
-        update_rating = Book.query.filter(Book.id == Book_review.book_id).first()
+        review_score_sum = db.session.query(db.func.sum(Book_review.score)).filter(Book_review.book_id == book_id).first()[0]
+        review_count = Book_review.query.filter(Book_review.book_id == book_id).count()
+        update_rating = Book.query.filter(book_id == Book.id).first()
         update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
+        print('======================================')
+        print(review_score_sum)
+        print(review_count)
+        print(update_rating)
+        print(update_rating.book_name)
+        print(update_rating.rating)
+        print(f'{book_id}번책')
+        print('======================================')
         db.session.commit()
         
         return jsonify({"result":"success"})
