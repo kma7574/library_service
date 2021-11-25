@@ -13,16 +13,18 @@
 		}).open();
 	}
 	function id_check(){
-		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		var re = /^[0-9a-zA-Z]*@[0-9a-zA-Z]*\.[a-zA-Z]{2,3}$/;
 
 		let user_id = $('#userId').val()
 		if (user_id == ''){
-			alert("ID를 입력해주세요");
+			$('#id_msg').text('⚠️ID를 입력해주세요!');
+			$('#id_msg').css('color','red');
 			document.getElementById("userId").focus();
 			return
 		}
 		else if (!(re.test(user_id))){ //정규식 만족 못한다면
-			alert("적합하지 않은 ID 형식입니다.");
+			$('#id_msg').text('⚠️적합하지 않은 ID 형식입니다.');
+			$('#id_msg').css('color','red');
 			document.getElementById("userId").focus();
 			return
 		}
@@ -34,13 +36,15 @@
 			},
 			success: function (res) {
 				if (res['result'] == 'overlap') {
-					alert("이미 사용중인 ID입니다!");
+					$('#id_msg').text('⚠️이미 사용중인 ID입니다!');
+					$('#id_msg').css('color','red');
 					$('#userId').val('');
 					alert("www")
 					return false
 				}
 				else{
-					alert("사용 가능한 ID입니다!");
+					$('#id_msg').text('✔️사용 가능한 ID입니다');
+					$('#id_msg').css('color','blue');
 					return true
 				}
 			}
@@ -54,21 +58,29 @@
 		var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);//특수문자
 
 		if (pw.length < 8 || pw.length > 20) {
-			alert("8자리 ~ 20자리 이내로 입력해주세요.");
+			//alert("8자리 ~ 20자리 이내로 입력해주세요.");
+			$('#pw_msg').text('⚠️8자리 ~ 20자리 이내로 입력해주세요!');
+			$('#pw_msg').css('color','red');
 			$('#userPw').val('');
 			$('#userPw').focus();
 			return false
 		} else if (pw.search(/\s/) != -1) {
-			alert("비밀번호는 공백 없이 입력해주세요.");
+			//alert("비밀번호는 공백 없이 입력해주세요.");
+			$('#pw_msg').text('⚠️비밀번호는 공백 없이 입력해주세요!');
+			$('#pw_msg').css('color','red');
 			$('#userPw').val('');
 			$('#userPw').focus();
 			return false
 		} else if ((num < 0 && eng < 0) || (eng < 0 && spe < 0) || (spe < 0 && num < 0)) {
-			alert("영문,숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요.");
+			//alert("영문,숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요.");
+			$('#pw_msg').text('⚠️영문,숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요!');
+			$('#pw_msg').css('color','red');
 			$('#userPw').val('');
 			$('#userPw').focus();
 			return false
 		} else {
+			$('#pw_msg').text('✔️사용 가능한 비밀번호입니다');
+			$('#pw_msg').css('color','blue');
 			$('#userPw2').focus();
 			return true
 		}
@@ -93,24 +105,35 @@
 
 	function name_check(){
 		var name = $("#name").val()
-		alert(name)
 		var kor = name.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g); //search: 대응된 부분의 인덱스를 반환
 		var num = name.search(/[0-9]/g);
 		var eng = name.search(/[a-z]/ig);
 		var spe = name.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
-		console.log(kor, eng, num, spe)
+
 		if(kor==0 && eng<0 && num<0 && spe<0){
-			alert("한글만 입력했네요!");
 			return true;
 		}
 		else if(kor<0 && eng==0 && num<0 && spe<0){
-			alert("영어만 입력했네요!");
 			return true;
 		}
 		else {
-			alert("규칙을 따라주십쇼")
+			$('#name_msg').text('⚠️올바른 이름을 입력해주세요!');
+			$('#name_msg').css('color','red');
 			$('#name').val('');
 			$('#name').focus();
+		}
+	}
+
+	function phone_check(){
+		var number = $("#phoneNumber").val()
+		var re = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+		
+		if (!(re.test(number))){
+			$('#name_msg').text('⚠️올바른 전화번호를 입력해주세요!');
+			$('#phoneNumber').val('');
+			$('#phoneNumber').focus();
+			console.log("wwwwwwwwwwwww")
+			return false
 		}
 	}
 
@@ -123,8 +146,8 @@
 		let phone_number = $('#phoneNumber').val()
 		let address = $('#mainAddress').val() + " " + $('#detailAddress').val()
 
-		if (user_id == '' || user_pw == '') {
-			alert('아이디와 패스워드를 입력해 주세요.')
+		if (user_id == '' || user_pw == '' || name =='' || phone_number == '' || address =='') {
+			alert('빠진곳이 없나 확인해보세요!')
 			return;
 		}
 
@@ -170,6 +193,7 @@
 
 				<div class="col-sm-7">
 					<input type="text" id='userId' class="form-control" placeholder="이메일 형식으로 기재해 주세요.">
+					<div style="font-size:0.6rem;" id="id_msg" name="id_msg"></div>
 				</div>
 				<div class="col-sm-3">
 					<button class="btn btn-primary" onclick=id_check()>ID CHECK</button>
@@ -180,6 +204,7 @@
 				<label class="col-sm-2 col-form-label">비밀번호</label>
 				<div class="col-sm-10">
 					<input type="password" onchange=pw_check() class="form-control" id="userPw" name="userPw">
+					<div style="font-size:0.6rem;" id="pw_msg" name="pw_msg"></div>
 				</div>
 			</div>
 			<div class="mb-3 row">
@@ -191,7 +216,8 @@
 			<div class="mb-3 row">
 				<label class="col-sm-2 col-form-label">이름</label>
 				<div class="col-sm-10">
-					<input type="tel" onchange=name_check() class="form-control" id="name">
+					<input type="input" onchange=name_check() class="form-control" id="name">
+					<div style="font-size:0.6rem;" id="name_msg" name="name_msg"></div>
 				</div>
 			</div>
 			<div class="mb-3 row">
@@ -204,8 +230,7 @@
 			<div class="mb-3 row">
 				<label class="col-sm-2 col-form-label">전화번호</label>
 				<div class="col-sm-10">
-					<input type="tel" class="form-control" id="phoneNumber" placeholder="010-1234-5678"
-						pattern="[0-1]{3}-[0-9]{4}-[0-9]{4}" required>
+					<input type="input" onchange=phone_check() class="form-control" id="phoneNumber" placeholder="010-1234-5678">
 				</div>
 			</div>
 			<div class="mb-3 row">
