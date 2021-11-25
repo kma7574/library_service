@@ -4,12 +4,9 @@
 <script>
     function postContent(id){
         let content = $('#my-content').val()
-        // let sc = document.getElementById("score")
-        // let scIdx = document.getElementById("score").options.selectedIndex
-        // let score = sc.options[scIdx].value
 
-        let score = omg
-        alert(score+'점점점')
+        let score = star_score/2
+        //alert(score+'점점점')
         //alert(id)
         $.ajax({
             url: '/inventory/' + id,
@@ -57,7 +54,7 @@
 
     function updatecontent(id) {
         let content = $(`#userEidContent${id}`).val()
-        let score = change_score
+        let score = star_score/2
         $.ajax({
             url: '/inventory/' + id,
             type: 'PATCH',
@@ -74,18 +71,29 @@
             }
         })
     }
-    let change_score = 0 //리뷰 수정시 바꾼평점을 담을 변수
+
+    var star_score = 0 //리뷰 작성시 입력한 평점
+    const drawStar = (target) => {
+        document.querySelector(`.star span`).style.width = `${target.value * 10}%`;
+        star_score = rating.value;
+    }
+
+    const mddrawStar = (target) => {
+        document.querySelector(`.mdstar span`).style.width = `${target.value * 10}%`;
+        star_score = mdrating.value;
+    }
+
     function modifycontent(id) {
         let content = $(`#userContent${id}`).text()
         let tmpHtml = `<textarea id=userEidContent${id} class="form-control" rows="3"></textarea>`
-        let tmpBtn = `<button class="btn btn-sm btn-primary" onclick="updatecontent(${id})">수정완료</button>`
-        let select = `<select id= "mdscore" name = "mdscore" onchange="mdChange()">
-                        <option value = "1">⭐</option>
-                        <option value = "2">⭐⭐</option>
-                        <option value = "3">⭐⭐⭐</option>
-                        <option value = "4">⭐⭐⭐⭐</option>
-                        <option value = "5">⭐⭐⭐⭐⭐</option>
-                    </select>`
+        let tmpBtn = `<div class="d-flex justify-content-end" style="margin-top:8px;">
+                            <button class="btn btn-sm btn-primary" onclick="updatecontent(${id})">수정완료</button>
+                        </div>`
+        let select = `<span style="display:inline-block;" class="mdstar">
+                        ★★★★★
+                        <span>★★★★★</span>
+                        <input type="range" id="mdrating" oninput="mddrawStar(this)" value="1" step="2" min="2" max="10">           
+                    </span>`
 
         $("#edit-area").empty()
         $("#edit-area").append(select)
@@ -93,17 +101,10 @@
         $(`#editBtn${id}`).hide()
         $(`#userEidContent${id}`).val(content)
         $("#edit-area").append(tmpBtn)
-        $("#mdscore").change(function(){
-            change_score = this.value;
+        $("#mdrating").change(function(){
+            star_score = this.value;
         })
     }
-    var omg = 0 //리뷰 작성시 입력한 평점
-    const drawStar = (target) => {
-        document.querySelector(`.star span`).style.width = `${target.value * 10}%`;
-        omg = (rating.value/2)
-        //console.log(omg)
-    }
-
 </script>
 {% endblock %}
 {% block content%}
@@ -163,19 +164,12 @@
         <div class="card-body">
             <div class="mb-3">
                 <div style="display:flex;">
-                    <label>{{g.user.user_id}}님, 글을 작성하세요</label>&nbsp;&nbsp;
-                    <!-- <select id= "score" name = "score" onchange="handleOnChange(this)">
-                        <option value = "1">⭐</option>
-                        <option value = "2">⭐⭐</option>
-                        <option value = "3">⭐⭐⭐</option>
-                        <option value = "4">⭐⭐⭐⭐</option>
-                        <option value = "5"selected>⭐⭐⭐⭐⭐</option>
-                    </select> -->     
+                    <label>{{g.user.user_id}}님, 글을 작성하세요</label>&nbsp;&nbsp;    
                 </div>
                 <span style="display:inline-block;" class="star">
                     ★★★★★
                     <span>★★★★★</span>
-                    <input type="range" id="rating" oninput="drawStar(this)" value="1" step="2" min="0" max="10">           
+                    <input type="range" id="rating" oninput="drawStar(this)" value="1" step="2" min="2" max="10">           
                 </span>
                 <textarea id='my-content' class="form-control" rows="3"></textarea>
             </div>

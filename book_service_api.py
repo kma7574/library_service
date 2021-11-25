@@ -48,14 +48,6 @@ def show_detail(book_id):
         review_count = Book_review.query.filter(Book_review.book_id == book_id).count()
         update_rating = Book.query.filter(book_id == Book.id).first()
         update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
-        print('======================================')
-        print(review_score_sum)
-        print(review_count)
-        print(update_rating)
-        print(update_rating.book_name)
-        print(update_rating.rating)
-        print(f'{book_id}번책')
-        print('======================================')
         db.session.commit()
         
         return jsonify({"result":"success"})
@@ -91,7 +83,6 @@ def borrow_check():
 
 @book_service.route('/<int:user_id>', methods=['GET', 'POST'])
 def myborrow(user_id):
-    # print('?????????????????????????????????????????????????????')
     name = db.session.query(Member.name).filter(Member.id == user_id).first()
     myborrow_list = db.session.query(Book_borrow.borrow_state, Book_borrow.borrow_date, Book_borrow.return_date, Book_borrow.borrow_book_id, Book_borrow.id, Book.book_name).join(Book, Book_borrow.borrow_book_id == Book.id).filter(Book_borrow.borrow_user_id == user_id)
     book_cnt = myborrow_list.count()
@@ -144,15 +135,22 @@ def return_check():
 
 @book_service.route('/inventory/<int:id>', methods=['DELETE'])
 def delete_content(id):
+    '''
+    파라미터로 넘어온 인덱스의 리뷰를 삭제하고 싶어요
+    '''
     id = request.form['id']
+    book_id = db.session.query(Book_review.book_id).filter(Book_review.id == id).first()[0]
     data = Book_review.query.filter(Book_review.id == id).first()
     if data is not None:
         db.session.delete(data)
         db.session.commit()
-        review_score_sum = db.session.query(db.func.sum(Book_review.score)).first()[0]
-        review_count = Book_review.query.count()
-        update_rating = Book.query.filter(Book.id == Book_review.book_id).first()
-        update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
+        review_score_sum = db.session.query(db.func.sum(Book_review.score)).filter(Book_review.book_id == book_id).first()[0]
+        review_count = Book_review.query.filter(Book_review.book_id == book_id).count()
+        update_rating = Book.query.filter(book_id == Book.id).first()
+        if  review_count == 0: #하나있던 리뷰를 삭제해서 해당책의 리뷰가 존재하지 않음
+            update_rating.rating = 0.0
+        else:
+            update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
         db.session.commit()
         return jsonify({"result": "success"})
     else:
@@ -164,6 +162,7 @@ def update_post(id):
     id = request.form['id']
     content = request.form['content']
     score = request.form['score']
+    book_id = db.session.query(Book_review.book_id).filter(Book_review.id == id).first()[0]
 
     author = Member.query.filter(Member.id == session['login']).first()
     data = Book_review.query.filter(Book_review.id == id).first()
@@ -171,9 +170,9 @@ def update_post(id):
     data.score = score
     db.session.commit()
     
-    review_score_sum = db.session.query(db.func.sum(Book_review.score)).first()[0]
-    review_count = Book_review.query.count()
-    update_rating = Book.query.filter(Book.id == Book_review.book_id).first()
+    review_score_sum = db.session.query(db.func.sum(Book_review.score)).filter(Book_review.book_id == book_id).first()[0]
+    review_count = Book_review.query.filter(Book_review.book_id == book_id).count()
+    update_rating = Book.query.filter(book_id == Book.id).first()
     update_rating.rating = round(review_score_sum/review_count, 1) # 첫째자리에서 반올림
     db.session.commit()
     return jsonify({"result":"success"})
