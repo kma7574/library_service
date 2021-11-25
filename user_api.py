@@ -14,7 +14,7 @@ def load_logged_member():#로그인 체크 모듈
     if user_id is None:
         g.user = None
     else:
-         g.user = Member.query.filter(Member.id == user_id).first()
+        g.user = Member.query.filter(Member.id == user_id).first()
 
 @user.route('/')
 def home():
