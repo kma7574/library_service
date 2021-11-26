@@ -16,6 +16,7 @@ def load_logged_member():#로그인 체크 모듈
     else:
         g.user = Member.query.filter(Member.id == user_id).first()
 
+
 @user.route('/')
 def home():
     book_list = Book.query.all()
@@ -65,7 +66,7 @@ def login():
             if user is not None:#입력한 아이디가 db에 존재한다면
                 if bcrypt.check_password_hash(user.user_pw, user_pw):
                     session['login'] = user.id #'login'으로 user_id를 세션에 저장
-                    print("wow")
+                    session['login_id'] = user_id
                     return jsonify({"result" : "success"})
                 else:
                     return jsonify({"result" : "pw_fail"})
@@ -80,6 +81,7 @@ def login():
 @user.route('/logout')
 def logout():
     session['login'] = None
+    session['login_id'] = None
     return redirect('/')
 
 @user.route('/tmp', methods=['GET'])
