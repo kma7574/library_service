@@ -10,19 +10,24 @@ bcrypt = Bcrypt()
 
 @book_service.route('/inventory',  methods=['GET', 'POST'])
 def show_list():
-
     if request.method == 'POST':
         search_word = request.form['searchWord']
         book_list = db.session.query(Book.id, Book.book_name, Book.path, Book.rating, Book_remain.remain_book_count).join(Book, Book_remain.id == Book.id).filter(Book.book_name.like(f'%{search_word}%'))
         search_count = book_list.count()
         page = request.args.get('page', type=int, default=1)  # 페이지
         pagination = book_list.paginate(page, per_page=8)
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        print(search_count)
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word, pagination=pagination)
     else:
         book_list = book_list = db.session.query(Book.id, Book.book_name, Book.path, Book.rating, Book_remain.remain_book_count).join(Book, Book_remain.id == Book.id)
         search_count = book_list.count()
         page = request.args.get('page', type=int, default=1)  # 페이지
         pagination = book_list.paginate(page, per_page=8)
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        print(search_count)
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         return render_template('inventory.html', book_list = book_list, search_count = search_count, pagination=pagination)
 
 
