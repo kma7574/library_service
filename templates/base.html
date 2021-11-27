@@ -14,6 +14,11 @@
 	<title>엘리스도서관에 오신 것을 환영합니다!</title>
 	{% block scripts%}
     {% endblock %}
+	<script>
+		function callLater(){
+			alert("To be Continued..")
+		}
+	</script>
 </head>
 
 <body>
@@ -32,6 +37,9 @@
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item">
 						<a class="nav-link active" aria-current="page" href="/inventory">책 목록</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="javascript:void(0);" onclick="callLater(); return false;">요청 게시판</a>
 					</li>
 				</ul>
 				<ul class="navbar-nav mb-2 mb-lg-0">
