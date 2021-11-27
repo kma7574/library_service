@@ -1,6 +1,5 @@
 from datetime import datetime
 from pytz import timezone
-from operator import add
 from flask import redirect, request, render_template, jsonify, Blueprint, session, g, Flask
 from models import Book, Book_borrow, Book_remain, Member, Book_review
 from db_connect import db
