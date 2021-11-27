@@ -4,10 +4,12 @@
 <script>
     function postContent(id){
         let content = $('#my-content').val()
-
         let score = star_score/2
-        //alert(score+'점점점')
-        //alert(id)
+        
+        if (score === 0){
+            alert("별점을 등록해주세요.")
+            return
+        }
         $.ajax({
             url: '/inventory/' + id,
             type: 'post',
@@ -30,6 +32,7 @@
     }
 
     function deleteContent(id) {
+        console.log(id)
         var msg = "해당 리뷰를 삭제하시겠습니까?"
         var flag = confirm(msg);
         
@@ -55,6 +58,11 @@
     function updatecontent(id) {
         let content = $(`#userEidContent${id}`).val()
         let score = star_score/2
+
+        if (score === 0){
+            alert("별점을 등록해주세요.")
+            return
+        }
         $.ajax({
             url: '/inventory/' + id,
             type: 'PATCH',
@@ -109,11 +117,14 @@
 {% endblock %}
 {% block content%}
 <hr>
-<div class="container d-flex justify-content-around">
+<div style="margin-bottom: 20px;"  class="container d-flex justify-content-around">
     <!--이미지 클릭시 새창에서 구매링크-->
-    <a href= "{{book_info.link}}" target="_blank">
-        <img src="{{book_info.path}}" width="300px" height="350px" class="rounded float-left" alt="book" title="구매하러가기">
-    </a>
+    <div>
+        <a href= "{{book_info.link}}" target="_blank">
+            <img src="{{book_info.path}}" width="300px" height="350px" class="rounded float-left" alt="book" title="구매하러가기">
+        </a>
+        <p class="title" style="color: gray;"><더 자세한 정보를 원하시면 책이미지를 클릭해주세요></p>
+    </div>
     <table class="table table-striped w-50 table-no-margin">
         <tbody>
             <tr>
@@ -147,7 +158,7 @@
         </tbody>
     </table>
 </div>
-<div class="container d-flex justify-content-around">
+<div style="margin-bottom: 20px;" class="container d-flex justify-content-around">
     <div class="card">
         <div class="card-body">
             <h4>책 소개</h4>
@@ -156,7 +167,6 @@
         </div>
     </div>
 </div>
-<p class="title" style="color: gray;"><책 이미지 클릭시 구매링크로 이동가능합니다.></p>
 <hr>
 <div class="container justify-content-around">
     {% if g.user.user_id %}
@@ -196,14 +206,14 @@
             {% elif review.score==5 %}
             <div style="display:inline-block;">{{review.user_id}}    &nbsp;&nbsp;⭐⭐⭐⭐⭐</div><div style="display:inline-block; font-size:1.2rem;"></div>
             {% else %}
-            <div style="display:inline-block;">{{review.user_id}}   &nbsp;&nbsp;</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆☆☆</div>
+            <div style="display:inline-block;">{{review.user_id}}    &nbsp;&nbsp;</div><div style="display:inline-block; font-size:1.2rem;">☆☆☆☆☆</div>
             {% endif %}
             <div>{{review.created}} 작성</div>
         </div><!--작성자 아이디(이메일)-->
         
         <div class="card-body">
             <div class="mb-3">
-                <label class="form-label">{{review.user_id}}</label>
+                
                 <div id='edit-area'>
                     <p id='userContent{{review.id}}'>{{review.content}}</p>
                 </div>

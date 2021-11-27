@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 book_service = Blueprint('book_service', __name__)
 bcrypt = Bcrypt()
 
+
 @book_service.route('/inventory',  methods=['GET', 'POST'])
 def show_list():
     if request.method == 'POST':
@@ -16,18 +17,12 @@ def show_list():
         search_count = book_list.count()
         page = request.args.get('page', type=int, default=1)  # 페이지
         pagination = book_list.paginate(page, per_page=8)
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-        print(search_count)
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         return render_template('inventory.html', book_list = book_list, search_count = search_count, search_word=search_word, pagination=pagination)
     else:
         book_list = book_list = db.session.query(Book.id, Book.book_name, Book.path, Book.rating, Book_remain.remain_book_count).join(Book, Book_remain.id == Book.id)
         search_count = book_list.count()
         page = request.args.get('page', type=int, default=1)  # 페이지
         pagination = book_list.paginate(page, per_page=8)
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-        print(search_count)
-        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         return render_template('inventory.html', book_list = book_list, search_count = search_count, pagination=pagination)
 
 
@@ -35,10 +30,7 @@ def show_list():
 def show_detail(book_id):
     if request.method =='GET':
         book_info = Book.query.filter(Book.id == book_id).first()
-        review_data = db.session.query(Book_review.score, Book_review.created,Book_review.content, Member.user_id).join(Member,Member.id == Book_review.user_id).filter(Book_review.book_id == book_id).order_by(Book_review.created.desc()).all()
-        print('======================')
-        print(len(review_data))
-        print('======================')
+        review_data = db.session.query(Book_review.id, Book_review.score, Book_review.created,Book_review.content, Member.user_id).join(Member,Member.id == Book_review.user_id).filter(Book_review.book_id == book_id).order_by(Book_review.created.desc()).all()
         return render_template('detail.html', book_info = book_info, book_id=book_id, review_data=review_data)
     else:
         content = request.form['content']
