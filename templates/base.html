@@ -69,6 +69,10 @@
 
 		html, body {
 			font-family: "Elice Digital Baeum",sans-serif;
+			margin: 0;
+    		padding: 0;
+			height: 100%;
+			
 		}
 
 		.star {
@@ -122,12 +126,24 @@
 			overflow: hidden;
 			pointer-events: none;
 		}
+
+		#wrap {
+			
+   			margin: 0 auto -155px;
+		}
+
+		#body-content {
+			min-height: 100vh;
+		}
+
+
 	</style>
 	{% block scripts%}
     {% endblock %}
 </head>
 
 <body>
+<div id="wrap">
 	<!--navbar-->
 	<nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd;">
 		<div class="container-fluid">
@@ -172,28 +188,32 @@
 			</div>
 		</div>
 	</nav><!--end of navbar-->
-	{% block content %} <!--한번 정의한 블록은 한 파일 내에서 한번만 사용가능-->
-    {% endblock content %}
+	<div id="body-content">
+		{% block content %} <!--한번 정의한 블록은 한 파일 내에서 한번만 사용가능-->
+		{% endblock content %}
+	</div>
 	<!-- Footer -->
-<footer class="text-center text-lg-start bg-light text-muted">
-	<!-- Section: Social media -->
-	<section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
-		<!-- Left -->
-		<div class="me-5 d-none d-lg-block">
-			<span>Get connected with us on social networks:</span>
-		</div>
-		<!-- Left -->
-		<!-- Right -->
-		<div>
-			<a href="https://kdt-gitlab.elice.io/003-part2-project-library/team2/library_service" class="me-4 text-reset">
-				<img style="width: 25px; height: 25px;" src="/static/img/github.png" alt="github">
-			</a>
-			<a href="https://github.com/kma7574" class="me-4 text-reset">
-				<img style="width: 25px; height: 25px;" src="/static/img/gitlab.png" alt="gitlab">
-			</a>
-		</div>
-		<!-- Right -->
-	</section>
+	<footer class="text-center text-lg-start bg-light text-muted navbar-fixed-bottom container-fluid">
+		<!-- Section: Social media -->
+		<section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+			<!-- Left -->
+			<div class="me-5 d-none d-lg-block">
+				<span>Get connected with us on social networks:</span>
+			</div>
+			<!-- Left -->
+			<!-- Right -->
+			<div>
+				<a href="https://kdt-gitlab.elice.io/003-part2-project-library/team2/library_service" class="me-4 text-reset">
+					<img style="width: 25px; height: 25px;" src="/static/img/github.png" alt="github">
+				</a>
+				<a href="https://github.com/kma7574" class="me-4 text-reset">
+					<img style="width: 25px; height: 25px;" src="/static/img/gitlab.png" alt="gitlab">
+				</a>
+			</div>
+			<!-- Right -->
+		</section>
+	</footer>
+</div>
 	  
 
 	<!-- Option 1: Bootstrap Bundle with Popper -->

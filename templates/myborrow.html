@@ -2,6 +2,7 @@
 
 {% block scripts %}
 <script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
+<!--<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>-->
 <script>
     function return_book(idx) {
         alert(idx+'번째 책을 반납하려 합니다.');        
@@ -75,6 +76,7 @@
 <p class="title">총 {{cnt}}건 검색됨</p>
 {% else%}
 <div class="title">
+    <img style="margin-top: 20px; margin-bottom:20px; width: 300px; height: 300px;" src="../static/img/no-results.png">
     <p class="title">총 {{cnt}}건 검색됨</p>
     <a class="btn btn-primary" href="/inventory">책 목록 보러라기</a>
 </div>
