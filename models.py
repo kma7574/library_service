@@ -28,8 +28,7 @@ class Member(db.Model):
     gender = db.Column(db.String(1),nullable=False)
     phone_number = db.Column(db.String(20),nullable=False)
     address = db.Column(db.String(500),nullable=False)
-    join_date = db.Column(db.TIMESTAMP, server_default=db.func.now(),
-                  onupdate=db.func.now())
+    join_date = db.Column(db.TIMESTAMP, server_default=db.func.now())
 
     def __init__(self, user_id, user_pw, name, gender, phone_number, address):
         self.user_id = user_id
@@ -50,8 +49,7 @@ class Book_borrow(db.Model):
         db.Integer, db.ForeignKey(Book.id), nullable=False)
     borrow_user_id = db.Column(
         db.Integer, db.ForeignKey(Member.id), nullable=False)
-    borrow_date = db.Column(db.TIMESTAMP, server_default=db.func.now(),
-                            onupdate=db.func.now())
+    borrow_date = db.Column(db.TIMESTAMP, server_default=db.func.now())
     borrow_state = db.Column(db.Boolean, nullable=False,
                              default=0)  # 대출현황(반납x: 0, 반납o: 1)
     return_date = db.Column(db.DateTime)
@@ -80,7 +78,7 @@ class Book_review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
     score = db.Column(db.Integer, nullable=False)
-    created =  db.Column(db.TIMESTAMP, server_default=db.func.now(),onupdate=db.func.now())
+    created =  db.Column(db.TIMESTAMP, server_default=db.func.now())
     book_id = db.Column(db.Integer, db.ForeignKey(Book.id), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey(Member.id), nullable=False)
 

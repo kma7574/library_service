@@ -1,4 +1,5 @@
 from datetime import datetime
+from pytz import timezone
 from operator import add
 from flask import redirect, request, render_template, jsonify, Blueprint, session, g, Flask
 from models import Book, Book_borrow, Book_remain, Member, Book_review
@@ -81,6 +82,10 @@ def borrow_check():
         record = Book_borrow(book_id, user_id)
         db.session.add(record)
         db.session.commit()
+        now = datetime.now(timezone('Asia/Seoul'))
+        update_record = Book_borrow.query.filter(Book_borrow.borrow_book_id==book_id, Book_borrow.borrow_user_id==user_id, Book_borrow.borrow_state==0).first()
+        update_record.borrow_date = now
+        db.session.commit()
         return jsonify({"result": "ok"})
 
 
@@ -125,7 +130,7 @@ def return_check():
             # 대여현황테이블의 반납상태 업데이트
             update_state = Book_borrow.query.filter((Book_borrow.borrow_book_id == borrow.borrow_book_id) & (Book_borrow.borrow_state == False)).first()
             update_state.borrow_state = 1
-            now = datetime.now()
+            now = datetime.now(timezone('Asia/Seoul'))
             update_state.return_date = now
             db.session.commit()
             return jsonify({"result": "ok"})
