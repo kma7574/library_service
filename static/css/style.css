@@ -1,0 +1,123 @@
+nav div {
+    height:50px;
+}
+nav div img {
+    display:block;
+    width:auto;
+    height:100%;
+}
+.wrap {
+    width: 540px;
+    margin: 10px auto;
+}
+
+.title {
+    text-align: center;
+}
+@media (min-width: 700px) {
+    .container {
+        width: 900px;
+    }
+}
+
+
+.countdown{
+    display: flex;
+    align-items:center;
+    justify-content: center;
+}
+#clock {
+    padding: 0 20%;
+    text-align: center;
+    margin-top: 20px;
+    border: none;
+    box-shadow: 0 0 10px rgba(96,134,181,.3);
+}
+
+.clock-section { display: inline-block; }
+
+.clock-section .value {
+    height: 100px;
+    line-height: 100px;
+    background-color: #333;
+    text-align: center;
+    border-radius: 10px;
+    padding:0 20px;
+}
+.value {
+    font-size: 50px;
+}
+.clock-label {
+    text-align: center;
+    padding-top: 4px;
+    font-size: 11px;
+}
+
+html, body {
+    font-family: "Elice Digital Baeum",sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    
+}
+
+.star {
+    position: relative;
+    font-size: 1.5rem;
+    color: #ddd;
+    overflow: hidden;
+}
+
+.star input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.star span {
+    width: 0;
+    position: absolute; 
+    left: 0;
+    color: #ffc83d;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.mdstar {
+    position: relative;
+    font-size: 1.5rem;
+    color: #ddd;
+    overflow: hidden;
+}
+
+.mdstar input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.mdstar span {
+    width: 0;
+    position: absolute; 
+    left: 0;
+    color: #ffc83d;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#wrap {
+    
+       margin: 0 auto -155px;
+}
+
+#body-content {
+    min-height: 100vh;
+}
