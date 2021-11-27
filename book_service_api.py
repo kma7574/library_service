@@ -67,8 +67,14 @@ def borrow_check():
     if record.count() >= 1:
         return jsonify({"result": "already_borrow"})
     remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_remain.remain_book_id == book_id).first()
+    user_record = Book_borrow.query.filter(Book_borrow.borrow_state == 0, Book_borrow.borrow_user_id == g.user.id).count()
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    print(user_record)
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     # print(remain_count)
-    if remain_count[0] == 0: #대출이 불가능한 경우
+    if user_record >= 3:
+        return jsonify({"result": "full_borrow"})
+    elif remain_count[0] == 0: #대출이 불가능한 경우
         return jsonify({"result": "not_remain"})
     else:
         update_book = Book_remain.query.filter(Book_remain.remain_book_id == book_id).first()

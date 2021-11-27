@@ -17,6 +17,9 @@
 					alert("로그인이 필요한 기능입니다.");
                     window.location.href = '/login'
 				}
+                else if (res['result'] == 'full_borrow'){
+					alert("1인당 최대 3권까지 대여가능합니다.");
+				}
                 else if (res['result'] == 'already_borrow'){
 					alert("이미 대여하신 책입니다. 다른책을 골라보세요.");
                     window.location.href = '/inventory'

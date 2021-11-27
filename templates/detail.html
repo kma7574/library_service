@@ -2,6 +2,34 @@
 {% block scripts %}
 
 <script>
+    function borrow_book(book_id) {
+        $.ajax({
+			url: '/borrow_check',
+			type: 'post',
+			data: {
+				'book_id': book_id
+			},
+			success: function (res) {
+				if (res['result'] == 'not_remain') {
+					alert("잔여수량이 없습니다");
+				}
+                else if (res['result'] == 'need_login'){
+					alert("로그인이 필요한 기능입니다.");
+                    window.location.href = '/login'
+				}
+                else if (res['result'] == 'full_borrow'){
+					alert("1인당 최대 3권까지 대여가능합니다.");
+				}
+                else if (res['result'] == 'already_borrow'){
+					alert("이미 대여하신 책입니다. 다른책을 골라보세요.");
+                    window.location.href = '/inventory'
+				}
+				else if (res['result'] == 'ok'){
+					alert("대여가 완료되었습니다");
+				}
+			}
+		})
+	}
     function postContent(id){
         let content = $('#my-content').val()
         let score = star_score/2
@@ -154,6 +182,9 @@
             <tr>
                 <td>평점</td>
                 <td>{{book_info.rating}}/5.0점</td>
+            </tr>
+            <tr>
+                <td colspan="2"><button id={{book_info.id}} class="btn btn-primary"  onclick=borrow_book(this.id)>대여하기</button> </td>
             </tr>
         </tbody>
     </table>
