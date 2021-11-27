@@ -12,6 +12,7 @@
 			success: function (res) {
 				if (res['result'] == 'not_remain') {
 					alert("잔여수량이 없습니다");
+                    window.location.reload()
 				}
                 else if (res['result'] == 'need_login'){
 					alert("로그인이 필요한 기능입니다.");
@@ -26,6 +27,7 @@
 				}
 				else if (res['result'] == 'ok'){
 					alert("대여가 완료되었습니다");
+                    window.location.reload()
 				}
 			}
 		})

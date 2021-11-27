@@ -64,7 +64,7 @@ def borrow_check():
     '''
     잔여수량 테이블에 남은 권수 확인하고 대출처리한다음 수량 -1 업데이트
     '''
-    record = db.session.query(Book_borrow).filter((Book_borrow.borrow_book_id == book_id) & (Book_borrow.borrow_user_id == user_id))
+    record = db.session.query(Book_borrow).filter((Book_borrow.borrow_book_id == book_id) & (Book_borrow.borrow_user_id == user_id) & (Book_borrow.borrow_state == 0))
     if record.count() >= 1:
         return jsonify({"result": "already_borrow"})
     remain_count = db.session.query(Book_remain.remain_book_count).filter(Book_remain.remain_book_id == book_id).first()
@@ -115,8 +115,6 @@ def return_check():
         # 반납처리로직
         # 반납하기 버튼을누르면 해당 아이디에 해당하는 책의 남은 수량카운트를 +1 해준다, borrow_state값을 0에서 1로 바꿔준다.
         borrow = db.session.query(Book_borrow).filter(Book_borrow.id == idx).first()
-        print(user_id)
-        print(borrow)
         remain_count = db.session.query(Book_remain).filter(Book_remain.remain_book_id == Book_borrow.borrow_book_id).all()
         if remain_count[0] == 5: #책의 최대수량은 5인데 반납하기전 권수가 5권이면 뭔가 오류가 생긴것(각 책의 최대수량은 추후 변경 가능)
             return jsonify({"result": "unknown_error"})

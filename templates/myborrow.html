@@ -3,8 +3,7 @@
 {% block scripts %}
 <!--<div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>-->
 <script>
-    function return_book(idx) {
-        alert(idx+'번째 책을 반납하려 합니다.');        
+    function return_book(idx) {      
         $.ajax({
 			url: '/return_check',
 			type: 'post',
@@ -24,10 +23,6 @@
 					alert("반납이 완료되었습니다");
                     window.location.href = '/'
 				}
-                else{
-                    alert("뭐지");
-                    alert(res['result'])
-                }
 			}
 		})
         
@@ -64,7 +59,6 @@
                 {% else %}
                     <td>{{i.return_date}}</td>
                     <td>반납완료</td>
-                    <!--<td><button class="btn btn-primary" type="submit" disabled="disabled">반납하기</button></td>-->
                 {% endif %}
             </tr>
                 {% endfor %}
