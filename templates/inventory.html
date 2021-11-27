@@ -3,8 +3,6 @@
 <script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
 <script>
 	function borrow_book(book_id) {
-		alert(book_id); //전송 잘됨
-
         $.ajax({
 			url: '/borrow_check',
 			type: 'post',
@@ -26,7 +24,6 @@
 				else if (res['result'] == 'ok'){
 					alert("대여가 완료되었습니다");
 				}
-
 			}
 		})
 	}
