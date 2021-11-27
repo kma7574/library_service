@@ -5,7 +5,6 @@
 <script type="text/javascript" src="static/js/jquery-3.6.0.min.js"></script>
 <script>
 	function login() {
-		console.log('해치웠나')
 		let user_id = $('#userId').val()
 		let user_pw = $('#userPw').val()
 		$.ajax({
@@ -37,7 +36,7 @@
 
 
 {% block content %}
-<h2 class>Elice 로그인</h2>
+<h2 class="title">Elice 로그인</h2>
 <div class="wrap">
 	<hr>
 	<div class="card">
@@ -49,7 +48,7 @@
 				</div>
 			</div>
 			<div class="mb-3 row">
-				<label class="col-sm-2 col-form-label">Password</label>
+				<label class="col-sm-2 col-form-label">비밀번호</label>
 				<div class="col-sm-10">
 					<input type="password" class="form-control" id="userPw">
 				</div>
